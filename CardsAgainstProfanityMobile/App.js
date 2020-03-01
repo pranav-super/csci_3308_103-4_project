@@ -1,114 +1,107 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import * as React from 'react';
+import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, Button } from 'react-native';import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Login } from './app/components/Login/index.js';
+import { CreateAccount } from './app/components/Create User/index.js';
+import { Landing } from './app/components/Landing/index.js';
+import { Lobby } from './app/components/Lobby/index.js';
+import { Game } from './app/components/Game/index.js';
+import { JLobby } from './app/components/Join Lobby/index.js';
+import { Stats } from './app/components/Stats/index.js';
+import { SubmittedForJudges } from './app/components/SubmittedForJudges/index.js';
+import { SubmittedForPlayers } from './app/components/SubmittedForPlayers/index.js';
+import { Scoreboard } from './app/components/Scoreboard/index.js';
+import { Chat } from './app/components/Chat/index.js';
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const App: () => React$Node = () => {
+/*function DetailsScreen({ route,navigation }) {
+  const { itemId } = route.params;
+  const { otherParam } = route.params;
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Details Screen</Text>
+      <Text>itemId: {JSON.stringify(itemId)}</Text>
+      <Text>otherParam: {JSON.stringify(otherParam)}</Text>
+      <Button
+        title="Go to Details... again"
+        onPress={() =>
+          navigation.push('Details', {
+            itemId: Math.floor(Math.random() * 100),
+          })
+        }
+      />
+      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+    </View>
   );
-};
+}*/
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+const Stack = createStackNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Landing" component={Landing} />
+        <Stack.Screen name="CreateAccount" component={CreateAccount} />
+        <Stack.Screen name="Lobby" component={Lobby} />
+        <Stack.Screen name="Game" component={Game} />
+        <Stack.Screen name="JLobby" component={JLobby} />
+        <Stack.Screen name="Stats" component={Stats} />
+        <Stack.Screen name="SubmittedForJudges" component={SubmittedForJudges} />
+        <Stack.Screen name="SubmittedForPlayers" component={SubmittedForPlayers} />
+        <Stack.Screen name="Chat" component={Chat} />
+        <Stack.Screen name="Scoreboard" component={Scoreboard} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
 
 export default App;
+
+
+const styles = StyleSheet.create({
+
+  container: {
+    backgroundColor: "#ddd2ce",
+    justifyContent: 'flex-start',
+    flex: 1
+  },
+
+  title: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: .8
+  },
+
+  titleText: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "#3f3f37",
+    color: "#dd977c",
+    fontSize: 35
+  },
+
+
+  loginContainer: {
+    //salignItems: 'center',
+
+  },
+
+  loginField: {
+    margin: 10
+  },
+
+  textField: {
+    margin: 10
+  },
+
+  button: {
+    alignItems: 'center',
+    backgroundColor: "#dd977c",
+    padding: 10,
+    margin: 10,
+    borderRadius: 3
+  }
+});
