@@ -1,29 +1,54 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, ScrollView, FlatList, Image } from 'react-native';
+import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 
-export function Stats({ navigation }) {
+
+
+const STATS = [
+  {
+    statName: 'Games Played',
+    value: 25,
+  },
+  {
+    statName: 'Win Loss Ratio',
+    value: 0.3939293942309401,
+  },
+  {
+    statName: 'Number of Decks',
+    value: 2,
+  },
+  {
+    statName: 'Pee Pee Poo Poo',
+    value: 100,
+  }
+];
+
+export function Stats({ route,navigation }) {
+
+  const { username } = route.params;
+
   return (
       <View style={styles.container}>
-        <View style={styles.title}>
-          <Text style={styles.titleText}> CARDS </Text>
-          <Text style={styles.titleText}> AGAINST </Text>
-          <Text style={styles.titleText}> PROFANITY. </Text>
-        </View>
 
-        <View style={styles.loginContainer}>
-          <View style={styles.loginField}>
-            <TextInput onChangeText={(text) => this.setState({username: text})} placeholder={"Username"} style={styles.textField} />
-            <TextInput onChangeText={(text) => this.setState({password: text})} placeholder={"Password"} secureTextEntry={true} style={styles.textField}/>
+        <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
+          <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
+            <Text style={{color: "white"}}>
+              STATS:
+            </Text>
+            <Text style={{color: "white"}}>
+              {username}
+            </Text>
           </View>
-
-          <TouchableOpacity onPress={() => navigation.navigate("Landing", {username: "SampleUsername", password: "Hash"})} style={styles.button}>
-            <Text>Log in!</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")} style={styles.button}>
-            <Text>I don't have an account.</Text>
-          </TouchableOpacity>
         </View>
+
+
+
+        <View style={{flex: 1}}>
+          <ScrollView style={{flex:1}}>
+            <FlatList data={STATS} renderItem={({ item }) => <Text>{item.statName}: {item.value}</Text>} keyExtractor={item => item.id} />
+          </ScrollView>
+        </View>
+
       </View>
   );
 }

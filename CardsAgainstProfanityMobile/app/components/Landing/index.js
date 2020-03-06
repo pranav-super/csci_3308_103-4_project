@@ -8,7 +8,7 @@ export function Landing({route, navigation}) {
     <View style={styles.container}>
       <View style={styles.loginField}>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Lobby", {username: "SampleUsername", password: "Hash", lobbykey: "randomly generated lobby key", isHost: true})} style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate("Lobby", {username: username, password: password, lobbykey: "randomly generated lobby key", isHost: true})} style={styles.button}>
           <Text>start game.</Text>
         </TouchableOpacity>
 
@@ -18,7 +18,7 @@ export function Landing({route, navigation}) {
         </TouchableOpacity>
 
 
-        <TouchableOpacity onPress={() => navigation.navigate("Stats")} style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate("Stats", {username: username})} style={styles.button}>
           <Text>check player stats.</Text>
         </TouchableOpacity>
 

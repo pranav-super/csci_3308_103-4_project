@@ -1,30 +1,165 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, ScrollView, FlatList, Image } from 'react-native';
+import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 
-export function Game({ navigation }) {
-  return (
-      <View style={styles.container}>
-        <View style={styles.title}>
-          <Text style={styles.titleText}> CARDS </Text>
-          <Text style={styles.titleText}> AGAINST </Text>
-          <Text style={styles.titleText}> PROFANITY. </Text>
-        </View>
+import Carousel from "react-native-carousel-control";
 
-        <View style={styles.loginContainer}>
-          <View style={styles.loginField}>
-            <TextInput onChangeText={(text) => this.setState({username: text})} placeholder={"Username"} style={styles.textField} />
-            <TextInput onChangeText={(text) => this.setState({password: text})} placeholder={"Password"} secureTextEntry={true} style={styles.textField}/>
-          </View>
+const CARDS = [
+  {
+    selected: false,
+    value: "funny phrase"
+  },
+  {
+    selected: false,
+    value: "funny phrase 2"
+  },
+  {
+    selected: false,
+    value: "funny phrase 3"
+  }
+];
 
-          <TouchableOpacity onPress={() => navigation.navigate("Landing", {username: "SampleUsername", password: "Hash"})} style={styles.button}>
-            <Text>Log in!</Text>
-          </TouchableOpacity>
+var selectedCards = [];
 
-          <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")} style={styles.button}>
-            <Text>I don't have an account.</Text>
-          </TouchableOpacity>
-        </View>
+
+class Item extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      index: props.index,
+      value: props.value,
+      selected: this.props.selected
+    }
+    this.selectedOrNot = this.selectedOrNot.bind(this);
+  }
+
+  selectedOrNot() {
+    if(this.state.selected) {
+      return (<Image style={{width: 30, height: 30}} source={require('../../../resources/imgs/check.png')}/>);
+    }
+    else {
+      return (<View/>);
+    }
+  }
+
+  render() {
+    return (
+      <Card onPress={() => {
+        this.setState({selected: !this.state.selected});
+        CARDS[this.state.index].selected = this.state.selected;
+        if (!this.state.selected) {
+          selectedCards.push(this.state.value);
+        }
+        else {
+          const index = selectedCards.indexOf(this.state.value);
+          if (index > -1) {
+            selectedCards.splice(index, 1);
+          }
+        }
+
+        console.log(selectedCards);
+      }}>
+        <Card.Content style={{flexDirection:"row", justifyContent: "space-evenly"}}>
+          <Title style={{flex: 1}}>{this.state.value}</Title>
+          {this.selectedOrNot()}
+        </Card.Content>
+      </Card>
+    );
+  }
+}
+
+function showCards(submitted, setSubmitted, prompt) {
+  if (submitted) {
+    return (
+      <View style={{flex:1}}>
+        <Text>SUBMITTED...</Text>
       </View>
+    );
+  }
+  else {
+    return (
+
+    <View style={{flex: 1}}>
+      <View style={{flex: 1}}>
+        <Carousel>
+          {CARDS.map((card, index) => {
+            return(<Item value={card.value} index={index}/>);
+          })}
+        </Carousel>
+      </View>
+
+
+
+      <TouchableOpacity style={{backgroundColor: "green", flex:0.15}} onPress={() => {
+        //verify number of cards selected is right
+        if (selectedCards.length == prompt.numberSlots) {
+          //if so, send info to submitted screen
+          setSubmitted(true);
+          //navigation.navigate("SubmittedForPlayers", {username: username, lobbykey: lobbykey, cards: selectedCards});
+        }
+        else if (selectedCards.length > prompt.numberSlots) {
+          //if not, alert
+          Alert.alert("Too many cards selected!");
+        }
+        else {
+          Alert.alert("Too few cards selected!");
+        }
+      }}>
+        <Text>Submit</Text>
+      </TouchableOpacity>
+    </View>
+    );
+  }
+}
+
+export function Game({ route, navigation }) {
+
+  var { username } = route.params;
+  var { lobbykey } = route.params;
+
+  const [submitted, setSubmitted] = React.useState(false)
+
+  var prompt = {
+    text: "THE PROMPT!",
+    numberSlots: 2
+  }
+
+  return (
+    <View style={styles.container}>
+
+      <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Chat")}>
+          <Text> Chat </Text>
+        </TouchableOpacity>
+
+        <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
+          <Text style={{color: "white"}}>
+            {username}
+          </Text>
+          <Text style={{color: "white"}}>
+            {lobbykey}
+          </Text>
+        </View>
+
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Scoreboard")}>
+          <Text> Scoreboard </Text>
+        </TouchableOpacity>
+      </View>
+
+
+      {showCards(submitted, setSubmitted, prompt)}
+
+
+      <View style={{backgroundColor: "purple", flex:0.15}}>
+        <Text>Timer</Text>
+        {/*update the prompt*/}
+      </View>
+
+      <View style={{backgroundColor: "blue", flex:0.15}}>
+        <Text>BLACK CARD TEXT</Text>
+      </View>
+    </View>
   );
 }
 

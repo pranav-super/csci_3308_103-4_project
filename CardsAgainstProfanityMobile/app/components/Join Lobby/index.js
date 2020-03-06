@@ -19,15 +19,14 @@ function Invalid(attemptedSubmit) {
   }
 }
 
-export function JLobby({ navigation }) {
+export function JLobby({ route, navigation }) {
 
-  var state = {
-    lobbykey: ""
-  }
+  const { username } = route.params;
+  const { password } = route.params;
+
+  const [lobbykey, setLobbykey] = React.useState("");
 
   const [attemptedsubmit, setAttemptedsubmit] = React.useState(false);
-
-  var notValid = (<View></View>)
 
   return (
       <View style={styles.container}>
@@ -38,13 +37,13 @@ export function JLobby({ navigation }) {
 
         <View style={styles.loginContainer}>
           <View style={styles.loginField}>
-            <TextInput onChangeText={(text) => state.lobbykey = text} placeholder={"Username"} style={styles.textField} />
+            <TextInput onChangeText={(text) => setLobbykey(text)} placeholder={"Lobby ID"} style={styles.textField} />
             {Invalid(attemptedsubmit)}
           </View>
 
           <TouchableOpacity onPress={() => {
-            if (state.lobbykey != "") {
-              navigation.navigate("Lobby", {username: "SampleUsername", password: "Hash", lobbykey: state.lobbykey, isHost: false})
+            if (lobbykey != "") {
+              navigation.navigate("Lobby", {username: username, password: password, lobbykey: lobbykey, isHost: false})
             }
             else {
               setAttemptedsubmit(true)

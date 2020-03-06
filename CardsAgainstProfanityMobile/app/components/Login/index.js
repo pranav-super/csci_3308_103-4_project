@@ -1,12 +1,34 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, Image } from 'react-native';
+
+
+function Invalid(attemptedSubmit) {
+  if (attemptedSubmit) {
+    console.log("Here, attemptedSubmit");
+    return(
+      <View style={{alignItems: "center", justifyContent: "center"}}>
+        <Image style={{width: 20, height: 20}} source={require('../../../resources/imgs/Picture1.png')}/>
+        <Text style={styles.invalid}> This isn't a valid username or password! </Text>
+      </View>
+    );
+  }
+  else {
+    console.log("Here, not attemptedSubmit");
+    return (
+      <View></View>
+    );
+  }
+}
+
 
 export function Login({ navigation }) {
 
-  var state = {
-    username: "",
-    password: ""
-  }
+
+  const [username, setUsername] = React.useState("");
+
+  const [password, setPassword] = React.useState("");
+
+  const [attemptedsubmit, setAttemptedsubmit] = React.useState(false);
 
 
   return (
@@ -19,11 +41,20 @@ export function Login({ navigation }) {
 
         <View style={styles.loginContainer}>
           <View style={styles.loginField}>
-            <TextInput onChangeText={(text) => state.username = text} placeholder={"Username"} style={styles.textField} />
-            <TextInput onChangeText={(text) => state.password = text} placeholder={"Password"} secureTextEntry={true} style={styles.textField}/>
+            <TextInput onChangeText={(text) => setUsername(text)} placeholder={"Username"} style={styles.textField} />
+            <TextInput onChangeText={(text) => setPassword(text)} placeholder={"Password"} secureTextEntry={true} style={styles.textField}/>
+            {Invalid(attemptedsubmit)}
           </View>
 
-          <TouchableOpacity onPress={() => navigation.navigate("Landing", {username: state.username, password: state.password})} style={styles.button}>
+          <TouchableOpacity onPress={() => {
+                if (username != "" && password != "") {
+                  setAttemptedsubmit(false)
+                  navigation.navigate("Landing", {username: username, password: password})
+                }
+                else {
+                  setAttemptedsubmit(true)
+                }
+              }} style={styles.button}>
             <Text>Log in!</Text>
           </TouchableOpacity>
 
@@ -36,6 +67,13 @@ export function Login({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+
+  invalid: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "red",
+    color: "white",
+    fontSize: 15
+  },
 
   container: {
     backgroundColor: "#ddd2ce",
