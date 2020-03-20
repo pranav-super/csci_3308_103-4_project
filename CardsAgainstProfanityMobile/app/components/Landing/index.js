@@ -13,12 +13,12 @@ export function Landing({route, navigation}) {
         </TouchableOpacity>
 
 
-        <TouchableOpacity onPress={() => navigation.navigate("JLobby")} style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate("JLobby",  {username: username, password: password})} style={styles.button}>
           <Text>join lobby.</Text>
         </TouchableOpacity>
 
 
-        <TouchableOpacity onPress={() => navigation.navigate("Stats", {username: username})} style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate("Stats", {username: username, password: password})} style={styles.button}>
           <Text>check player stats.</Text>
         </TouchableOpacity>
 
