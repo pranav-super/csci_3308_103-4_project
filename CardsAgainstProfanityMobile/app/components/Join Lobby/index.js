@@ -22,7 +22,7 @@ function Invalid(attemptedSubmit) {
 export function JLobby({ route, navigation }) {
 
   const { username } = route.params;
-  const { password } = route.params;
+  //const { password } = route.params;
 
   const [lobbykey, setLobbykey] = React.useState("");
 
@@ -43,7 +43,7 @@ export function JLobby({ route, navigation }) {
 
           <TouchableOpacity onPress={() => {
             if (lobbykey != "") {
-              navigation.navigate("Lobby", {username: username, password: password, lobbykey: lobbykey, isHost: false})
+              navigation.navigate("Lobby", {username: username, lobbykey: lobbykey, isHost: false})
             }
             else {
               setAttemptedsubmit(true)

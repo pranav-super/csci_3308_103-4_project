@@ -6,7 +6,7 @@ import Carousel from "react-native-carousel-control";
 
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
-var { Dimensions } = require('react-native')
+
 
 const CARDS = [
   {
@@ -26,6 +26,7 @@ const CARDS = [
 var selectedCards = [];
 
 
+
 class Item extends Component { /*the reason I haven't been using this syntax for everything is because react navigation won't work with it at the moment */
 
   constructor(props) {
@@ -33,8 +34,10 @@ class Item extends Component { /*the reason I haven't been using this syntax for
     this.state = {
       index: props.index,
       value: props.value,
-      selected: this.props.selected
+      selected: false
     }
+    this.selectCard = this.props.selectCard.bind(this);
+    this.removeCard = this.props.removeCard.bind(this);
     this.selectedOrNot = this.selectedOrNot.bind(this);
   }
 
@@ -50,10 +53,17 @@ class Item extends Component { /*the reason I haven't been using this syntax for
   render() {
     return (
       <Card onPress={() => {
+        if(this.state.selected) {
+          this.removeCard(this.state.value)
+        }
+        else {
+          this.selectCard(this.state.value)
+        }
         this.setState({selected: !this.state.selected});
-        CARDS[this.state.index].selected = this.state.selected;
-        if (!this.state.selected) {
-          selectedCards.push(this.state.value);
+
+        //CARDS[this.state.index].selected = this.state.selected;
+        /*if (!this.state.selected) {
+          //selectedCards.push(this.state.value);
         }
         else {
           const index = selectedCards.indexOf(this.state.value);
@@ -62,7 +72,7 @@ class Item extends Component { /*the reason I haven't been using this syntax for
           }
         }
 
-        console.log(selectedCards);
+        console.log(selectedCards);*/
       }}>
         <Card.Content style={{flexDirection:"row", justifyContent: "space-evenly"}}>
           <Title style={{flex: 1}}>{this.state.value}</Title>
@@ -73,12 +83,13 @@ class Item extends Component { /*the reason I haven't been using this syntax for
   }
 }
 
+
+
+
 class Timer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      setSubmitted: props.setSubmitted,
-      judged: props.judged,
       progress: 0
     }
     this.tick = this.tick.bind(this);
@@ -115,177 +126,16 @@ class Timer extends Component {
             width={width}
             barAnimationDuration={1000}
             onComplete={() => {
-              this.state.setSubmitted(true) //http post request
+              this.props.handler() //http post request
             }}
           />
     );
   }
 }
 
-function showCards(submitted, setSubmitted, prompt, judged, setJudged) {
-  if(judged) {
 
-    //http request
-
-    var card = {value: "pee pee poo poo"};
-
-    return (
-      <View style={{flex:1}}>
-        <Text>THE WINNER IS</Text>
-        <Text>PLAYER X</Text>
-        <Item value={card.value} index={0}/>
-      </View>
-    );
-  }
-
-  if(prompt.isJudge && !submitted) {
-    return (
-      <View style={{flex:1}}>
-        <Text>WAITING FOR SUBMISSIONS...</Text>
-      </View>
-    );
-  }
-
-  else if (prompt.isJudge && submitted) {
-    var results = [
-      {
-        player: "Player 1",
-        value: "funny phrase"
-      },
-      {
-        player: "Player 2",
-        value: "funny phrase 2"
-      },
-      {
-        player: "Player 3",
-        value: "funny phrase 3"
-      }
-    ];
-
-    if (results == null) {
-
-      //http request
-
-      return(
-        <View style={{flex:1}}>
-          <Text>FETCHING SUBMISSIONS...</Text>
-        </View>
-      );
-    }
-    else {
-      return(
-
-
-
-
-        <View style={{flex: 1}}>
-          <View style={{flex: 1}}>
-            <ScrollView>
-              {
-                results.map((card, index) => {
-                  return(
-                    <View>
-                      <View><Text> </Text></View>
-                      <Item value={card.value} index={index}/>
-                      <View><Text> </Text></View>
-                    </View>
-                  );
-                })
-              }
-            </ScrollView>
-          </View>
-
-
-
-          <TouchableOpacity style={{backgroundColor: "green", flex:0.15}} onPress={() => {
-            //verify number of cards selected is right
-            if (selectedCards.length == 1) {
-              //if so, send info to submitted screen
-              setJudged(true);
-              //HTTP request
-              //navigation.navigate("SubmittedForPlayers", {username: username, lobbykey: lobbykey, cards: selectedCards});
-            }
-            else if (selectedCards.length > 1) {
-              //if not, alert
-              Alert.alert("Too many cards selected!");
-            }
-            else {
-              Alert.alert("Too few cards selected!");
-            }
-          }}>
-            <Text>Submit</Text>
-          </TouchableOpacity>
-        </View>
-
-
-
-      );
-    }
-  }
-
-
-  else if (submitted) {
-    return (
-      <View style={{flex:1}}>
-        <Text>SUBMITTED...</Text>
-      </View>
-    );
-  }
-  else {
-    return (
-
-    <View style={{flex: 1}}>
-      <View style={{flex: 1}}>
-        <Carousel>
-          {CARDS.map((card, index) => {
-            return(
-                <Item value={card.value} index={index}/>
-            );
-          })}
-        </Carousel>
-      </View>
-
-
-
-      <TouchableOpacity style={{backgroundColor: "green", flex:0.15}} onPress={() => {
-        //verify number of cards selected is right
-        if (selectedCards.length == prompt.numberSlots) {
-          //if so, send info to submitted screen
-          setSubmitted(true);
-          //HTTP request
-          //navigation.navigate("SubmittedForPlayers", {username: username, lobbykey: lobbykey, cards: selectedCards});
-        }
-        else if (selectedCards.length > prompt.numberSlots) {
-          //if not, alert
-          Alert.alert("Too many cards selected!");
-        }
-        else {
-          Alert.alert("Too few cards selected!");
-        }
-      }}>
-        <Text>Submit</Text>
-      </TouchableOpacity>
-    </View>
-    );
-  }
-}
-
-export function Game({ route, navigation }) {
-
-  var { username } = route.params;
-  var { lobbykey } = route.params;
-
-  const [submitted, setSubmitted] = React.useState(false);
-  const [judged, setJudged] = React.useState(false);
-
-  var prompt = {
-    text: "THE PROMPT!",
-    numberSlots: 2,
-    isJudge: true
-  }
-
-  //get this from the server :)
-  /*const [gameState, setGameState] = React.useState(
+export function GameWrapper({ route, navigation }) {
+  /*var gameState =
     {
       players: [
         {
@@ -333,17 +183,94 @@ export function Game({ route, navigation }) {
       ],
       prompt: {
         text: "Here's a funny question, what do you get when _____ goes _____?",
-        numSlots: 2
+        numSlots: 2,
+        responses: [
+          {
+            player: "Player 1",
+            value: "funny phrase"
+          },
+          {
+            player: "Player 2",
+            value: "funny phrase 2"
+          },
+          {
+            player: "Player 3",
+            value: "funny phrase 3"
+          }
+        ]
       },
-      myState: "judge//waiting"
-    }
-  );*/
+      myState: {
+        role: "beginning",
+        status: "null"
+      }
+    }*/
 
-  /*if (prompt.isJudge) {
-    navigation.navigate("SubmittedForJudges"); //OR implement it here if u want; might be the play
-  }*/
+  var { username } = route.params;
+  var { lobbykey } = route.params;
+
+  console.log(route.params)
+
+  console.log(username);
 
   return (
+    <View style={styles.container}>
+      <Game navigation={navigation} username={username} lobbykey={lobbykey} />
+    </View>
+  );
+}
+
+class Game extends Component {
+
+  constructor(props) {
+    super(props);
+    //this.state = props.gameState;
+    this.state = {
+      navigation: props.navigation
+    }
+    this.username = props.username;
+    this.lobbykey = props.lobbykey;
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => this.getUpdate(), 1000);
+  }
+
+  getUpdate() {
+    //fetch
+    fetch('http://10.74.50.180:3000/role', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username: this.username})
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+         console.log(responseJson);
+         /*this.setState({
+            players: responseJson.players,
+            chat: responseJson.chat,
+            prompt: responseJson.prompt,
+            myState: responseJson.myState
+         })*/
+         if (responseJson.role == 'judge') {
+           this.state.navigation.navigate("judge-wait", {username: state.username, lobbykey: state.password});
+         }
+         else {
+           this.state.navigation.navigate("player-select", {username: state.username, lobbykey: state.password});
+         }
+
+
+      })
+      .catch((error) => {
+         console.log(error);
+      });
+  }
+
+  render() {
+
+   return (
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
@@ -353,10 +280,10 @@ export function Game({ route, navigation }) {
 
         <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
           <Text style={{color: "white"}}>
-            {username}
+            {this.state.username}
           </Text>
           <Text style={{color: "white"}}>
-            {lobbykey}
+            {this.state.lobbykey}
           </Text>
         </View>
 
@@ -365,23 +292,14 @@ export function Game({ route, navigation }) {
         </TouchableOpacity>
       </View>
 
-
-      {showCards(submitted, setSubmitted, prompt, judged, setJudged)}
-
-
-      {/*<View style={{backgroundColor: "purple", flex:0.15}}>
-        <Text>Timer</Text>
-        {/*update the prompt*}
-      </View>*/}
-
-      <Timer setSubmitted={setSubmitted} judged={judged}/>
-
-      <View style={{backgroundColor: "blue", flex:0.15}}>
-        <Text>BLACK CARD TEXT</Text>
+      <View>
+        <Text>WAITING FOR CARDS AND ROLES TO BE DEALT.</Text>
       </View>
     </View>
-  );
+   );
+  }
 }
+
 
 const styles = StyleSheet.create({
 

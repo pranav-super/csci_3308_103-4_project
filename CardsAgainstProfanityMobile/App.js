@@ -5,7 +5,7 @@ import { Login } from './app/components/Login/index.js';
 import { CreateAccount } from './app/components/Create User/index.js';
 import { Landing } from './app/components/Landing/index.js';
 import { Lobby } from './app/components/Lobby/index.js';
-import { Game } from './app/components/Game/index.js';
+import { GameWrapper } from './app/components/Game/index.js';
 import { JLobby } from './app/components/Join Lobby/index.js';
 import { Stats } from './app/components/Stats/index.js';
 import { SubmittedForJudges } from './app/components/SubmittedForJudges/index.js';
@@ -46,7 +46,7 @@ function App() {
         <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="Lobby" component={Lobby} />
-        <Stack.Screen name="Game" component={Game} />
+        <Stack.Screen name="GameWrapper" component={GameWrapper} />
         <Stack.Screen name="JLobby" component={JLobby} />
         <Stack.Screen name="Stats" component={Stats} />
         <Stack.Screen name="SubmittedForJudges" component={SubmittedForJudges} />
