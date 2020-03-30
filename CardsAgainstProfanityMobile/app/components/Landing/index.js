@@ -10,7 +10,25 @@ export function Landing({route, navigation}) {
 
         <TouchableOpacity onPress={() => {
           //create lobby with http request
-          navigation.navigate("Lobby", {username: username, lobbykey: "randomly generated lobby key", isHost: true})}
+
+          fetch('http://10.74.50.180/createlobby', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username: this.state.username})
+          })
+            .then((response) => response.json())
+            .then((responseJson) => {
+
+              //this.state.navigation.navigate('winner', { username: this.username, lobbykey: this.lobbykey })
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+          //navigation.navigate("Lobby", {username: username, lobbykey: "randomly generated lobby key", isHost: true})}
         } style={styles.button}>
           <Text>start game.</Text>
         </TouchableOpacity>

@@ -69,7 +69,7 @@ class Lobby extends Component {
       });
   }
 
-  canPlay(isHost, navigation, params) {
+  canPlay(isHost, navigation, params) { //TO DO: Add stuff about picking decks!!!!!!!!!!!
     if (this.state.isHost) {
       return(
         <TouchableOpacity style={{flex: 1, justifyContent: "center", alignItems: "center"}} onPress={() => this.state.navigation.navigate("GameWrapper", { username: this.state.username, lobbykey: this.state.lobbykey })}>

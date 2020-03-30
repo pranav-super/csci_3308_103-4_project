@@ -3,7 +3,43 @@ const app = express()
 const port = 3000
 
 
-var gameState = {
+
+var decks = {
+  "Adult": [
+    "Profane Word 1",
+    "Profane Word 2",
+    "Profane Word 3",
+    "Profane Word 4",
+    "Profane Word 5",
+    "Profane Word 6",
+  ],
+  "Kids": [
+    "Not Profane Word 1",
+    "Not Profane Word 2",
+    "Not Profane Word 3",
+    "Not Profane Word 4",
+    "Not Profane Word 5",
+    "Not Profane Word 6",
+  ]
+}
+
+var promptDecks = {
+  "Adult": [
+    "What do you get when the _____ is a ______?"
+  ],
+  "Kids": [
+    "What do you get when the chicken crossed the ______?"
+  ]
+}
+
+
+var userpermissionsmapping = { //THIS WILL BE REPLACED BY AN SQL REQUEST, OR A REQUEST IN Landing/index.js WHERE THE USER PICKS THE DECKS TO USE FROM A FETCH REQUEST.
+  "Player1": ["Kids"]
+}
+
+
+var gameState =
+/*{
   players: {
     "Player1": {
       cards: ["funny1", "funny2", "funny3"],
@@ -90,7 +126,7 @@ var gameState = {
       numSlots: 1
     }
   ]
-}
+}*/
 
 //app.get('/', (req, res) => res.send(gameState))
 app.post('/role', (req, res) => {
@@ -124,7 +160,7 @@ app.get('/judgeselectstate', (req, res) => {
   })
 })
 
-app.get('/readyToShowWinner', (req,res) => {
+app.get('/readytoshowwinner', (req,res) => {
   if(gameState.prompt.winner != null) {
     res.json({
       ready: true
@@ -190,12 +226,78 @@ app.get('/winner', (req, res) => {
 })
 
 
-app.get('/createLobby', (req, res) => {
+app.post('/createlobby', (req, res) => {
+  var newId = '';
+  do {
+    newId = ''
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; //https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      newId += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+  }
+  while (!gameState.hasOwnProperty(newId));
 
+  //we now created a new identifier/lobby key
+  //let's create the game's state, importing the cards and the like, and adding this user to it.
+
+  let username = req.params.username;
+
+  gameState[newId] = {
+
+    players: {
+      username: {
+        cards: [],
+        role: "judge",
+        status: "WAITING"
+      }
+    },
+
+    chat: [
+
+    ],
+
+    prompt: {
+      text: "",
+      numSlots: -1,
+      responses: [
+
+      ],
+      winner: null
+    },
+
+    deck: [
+
+    ],
+
+    promptDeck: [
+
+    ],
+
+    started: false
+  }
+
+  //fill decks, assign cards too, shuffle?
+
+  //assign state?
+
+  //send back lobbykey
 })
 
 app.post('/joinlobby', (req, res) => {
+  //get LOBBYKEY
 
+  //assign state
+})
+
+app.post('/lobbyready', (req, res) => {
+  //get lobbykey
+  //check if user started it
+})
+
+app.post('/startgame', (req, res) => {
+  //get lobbykey
+  //start
 })
 
 app.listen(port, () => {
