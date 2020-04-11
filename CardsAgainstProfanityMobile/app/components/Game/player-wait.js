@@ -5,6 +5,8 @@ import { Item, Timer } from './index.js'
 
 import Carousel from "react-native-carousel-control";
 
+import { StackActions } from '@react-navigation/native'
+
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
 export function PlayerWaitWrapper({ route, navigation }) {
@@ -29,8 +31,7 @@ class PlayerWait extends Component {
     super(props);
     //this.state = props.gameState;
     this.state = {
-      navigation: props.navigation,
-      prompt: props.prompt
+      navigation: props.navigation
     }
     this.username = props.username;
     this.lobbykey = props.lobbykey;
@@ -43,7 +44,15 @@ class PlayerWait extends Component {
 
   getUpdate() {
     //fetch
-    fetch('http://10.74.50.180:3000/readyToShowWinner')
+    fetch('http://10.74.50.180:3000/readytoshowwinner', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"lobbykey": this.lobbykey})
+    })
         .then((response) => response.json())
         .then((responseJson) => {
            console.log(responseJson);
@@ -53,24 +62,29 @@ class PlayerWait extends Component {
               prompt: responseJson.prompt,
               myState: responseJson.myState
            })*/
-           if (responseJson.ready)
-            this.state.navigation.navigate('Winner', { username:this.username, lobbykey: this.lobbykey })//winner
-
+           if (responseJson.ready) {
+             clearInterval(this.timer);
+             this.state.navigation.dispatch(
+               StackActions.replace('WinnerWrapper', { username:this.username, lobbykey: this.lobbykey })
+             )
+             //this.state.navigation.navigate('WinnerWrapper', { username:this.username, lobbykey: this.lobbykey })//winner
+           }
 
         })
         .catch((error) => {
            console.log(error);
         });
-      }
   }
 
   render() {
+
+      //this.timer = setInterval(() => this.getUpdate(), 1000);
 
    return (
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
@@ -83,7 +97,7 @@ class PlayerWait extends Component {
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>
@@ -92,11 +106,51 @@ class PlayerWait extends Component {
         <Text>WAITING FOR JUDGE</Text>
       </View>
 
-      <View style={{backgroundColor: "blue", flex:0.15}}>
-        <Text>{this.state.prompt.text}</Text>
-      </View>
-
     </View>
    );
   }
 }
+
+const styles = StyleSheet.create({
+
+  container: {
+    backgroundColor: "#ddd2ce",
+    justifyContent: 'flex-start',
+    flex: 1
+  },
+
+  title: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: .8
+  },
+
+  titleText: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "#3f3f37",
+    color: "#dd977c",
+    fontSize: 35
+  },
+
+
+  loginContainer: {
+    //salignItems: 'center',
+
+  },
+
+  loginField: {
+    margin: 10
+  },
+
+  textField: {
+    margin: 10
+  },
+
+  button: {
+    alignItems: 'center',
+    backgroundColor: "#dd977c",
+    padding: 10,
+    margin: 10,
+    borderRadius: 3
+  }
+});

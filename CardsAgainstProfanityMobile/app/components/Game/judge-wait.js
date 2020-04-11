@@ -7,7 +7,9 @@ import Carousel from "react-native-carousel-control";
 
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
-export function PlayerWaitWrapper({ route, navigation }) {
+import { StackActions } from '@react-navigation/native'
+
+export function JudgeWaitWrapper({ route, navigation }) {
 
   var { username } = route.params;
   var { lobbykey } = route.params;
@@ -18,12 +20,12 @@ export function PlayerWaitWrapper({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <PlayerWait navigation={navigation} username={username} lobbykey={lobbykey} />
+      <JudgeWait navigation={navigation} username={username} lobbykey={lobbykey} />
     </View>
   );
 }
 
-class PlayerWait extends Component {
+class JudgeWait extends Component {
 
   constructor(props) {
     super(props);
@@ -37,12 +39,20 @@ class PlayerWait extends Component {
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => this.getUpdate(), 1000);
+    this.timer = setInterval(() => this.getUpdate(), 6000);
   }
 
   getUpdate() {
     //fetch
-    fetch('http://10.74.50.180:3000/readytojudge')
+    fetch('http://10.74.50.180:3000/readytojudge', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"lobbykey": this.lobbykey})
+    })
         .then((response) => response.json())
         .then((responseJson) => {
            console.log(responseJson);
@@ -52,38 +62,43 @@ class PlayerWait extends Component {
               prompt: responseJson.prompt,
               myState: responseJson.myState
            })*/
-
-           if (responseJson.finished)
-            this.state.navigation.navigate('judge-select', { username: this.username, lobbykey: this.lobbykey})//judge-select
-
+          if (responseJson.finished) {
+            clearInterval(this.timer);
+            //this.state.navigation.navigate('JudgeSelectWrapper', { username: this.username, lobbykey: this.lobbykey})//judge-select
+            this.state.navigation.dispatch(
+              StackActions.replace('JudgeSelectWrapper', {username: this.username, lobbykey: this.lobbykey})
+            )
+          }
 
         })
         .catch((error) => {
            console.log(error);
         });
-      }
   }
 
+
   render() {
+
+    //this.timer = setInterval(() => this.getUpdate(), 6000);
 
    return (
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
         <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
           <Text style={{color: "white"}}>
-            {this.state.username}
+            {this.username}
           </Text>
           <Text style={{color: "white"}}>
-            {this.state.lobbykey}
+            {this.lobbykey}
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>
@@ -96,3 +111,48 @@ class PlayerWait extends Component {
    );
   }
 }
+
+
+const styles = StyleSheet.create({
+
+  container: {
+    backgroundColor: "#ddd2ce",
+    justifyContent: 'flex-start',
+    flex: 1
+  },
+
+  title: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: .8
+  },
+
+  titleText: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "#3f3f37",
+    color: "#dd977c",
+    fontSize: 35
+  },
+
+
+  loginContainer: {
+    //salignItems: 'center',
+
+  },
+
+  loginField: {
+    margin: 10
+  },
+
+  textField: {
+    margin: 10
+  },
+
+  button: {
+    alignItems: 'center',
+    backgroundColor: "#dd977c",
+    padding: 10,
+    margin: 10,
+    borderRadius: 3
+  }
+});

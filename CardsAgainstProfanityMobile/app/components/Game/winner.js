@@ -3,6 +3,8 @@ import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, ScrollView,
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { Item, Timer } from './index.js'
 
+import { StackActions } from '@react-navigation/native'
+
 import Carousel from "react-native-carousel-control";
 
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
@@ -18,7 +20,7 @@ export function WinnerWrapper({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <PlayerWait navigation={navigation} username={username} lobbykey={lobbykey} />
+      <Winner navigation={navigation} username={username} lobbykey={lobbykey} />
     </View>
   );
 }
@@ -30,6 +32,7 @@ class Winner extends Component {
     //this.state = props.gameState;
     this.state = {
       navigation: props.navigation,
+      ended: false,
       prompt: {
 
       },
@@ -44,18 +47,29 @@ class Winner extends Component {
 
   componentDidMount() {
     this.timer = setInterval(() => this.getUpdate(), 7000);
-    fetch('http://10.74.50.180:3000/winner')
+    fetch('http://10.74.50.180:3000/winner', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"lobbykey": this.lobbykey})
+    })
       .then((response) => response.json())
       .then((responseJson) => {
-        if(!responseJson.status == "ended") {
+        if(responseJson.status == "ended") {
           this.setState({
+            ended: true,
             prompt: responseJson.prompt,
             winner: responseJson.winner
           })
         }
         else {
-          Alert.alert("Out of cards! The game is now over.");
-          this.state.navigation.navigate("Landing", { username: this.username })
+          this.setState({
+            prompt: responseJson.prompt,
+            winner: responseJson.winner
+          })
         }
       })
   }
@@ -82,16 +96,32 @@ class Winner extends Component {
            console.log(error);
         });
       }*/
-      this.state.navigation.navigate("Game", {username: username, lobbykey: lobbykey})
+      if (this.state.ended) {
+        Alert.alert("Out of cards! The game is now over.");
+        clearInterval(this.timer);
+        //this.state.navigation.navigate("Landing", { username: this.username })
+        this.state.navigation.dispatch(
+          StackActions.replace('Landing', {username: this.username})
+        )
+      }
+      else {
+        clearInterval(this.timer);
+        //this.state.navigation.navigate("GameWrapper", {username: this.username, lobbykey: this.lobbykey})
+        this.state.navigation.dispatch(
+          StackActions.replace('GameWrapper', {username: this.username, lobbykey: this.lobbykey})
+        )
+      }
   }
 
   render() {
+
+    //this.timer = setInterval(() => this.getUpdate(), 7000);
 
    return (
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
@@ -104,12 +134,12 @@ class Winner extends Component {
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>
 
-      <Card>
+      <Card style={{flex: 1}}>
         <Card.Content style={{flexDirection:"row", justifyContent: "space-evenly"}}>
           <Title style={{flex: 1}}>{this.state.winner.player}</Title>
           <Title style={{flex: 1}}>{this.state.winner.value}</Title>
@@ -126,3 +156,47 @@ class Winner extends Component {
    );
   }
 }
+
+const styles = StyleSheet.create({
+
+  container: {
+    backgroundColor: "#ddd2ce",
+    justifyContent: 'flex-start',
+    flex: 1
+  },
+
+  title: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: .8
+  },
+
+  titleText: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "#3f3f37",
+    color: "#dd977c",
+    fontSize: 35
+  },
+
+
+  loginContainer: {
+    //salignItems: 'center',
+
+  },
+
+  loginField: {
+    margin: 10
+  },
+
+  textField: {
+    margin: 10
+  },
+
+  button: {
+    alignItems: 'center',
+    backgroundColor: "#dd977c",
+    padding: 10,
+    margin: 10,
+    borderRadius: 3
+  }
+});

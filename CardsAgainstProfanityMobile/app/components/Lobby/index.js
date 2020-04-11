@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, ScrollView, FlatList, Image } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { CheckBox } from 'react-native-elements'
+
+import { StackActions } from '@react-navigation/native'
+
+/*const DECKS = [
+  "Adult",
+  "Kids"
+];
 
 
 const DATA = [
@@ -16,10 +24,11 @@ const DATA = [
     title: 'Third Player',
     profPic: 'https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=392',
   },
-];
+];*/
 
-function Item({ title, profPic }) {
-  console.log(title)
+function Item({ title }) {
+  //console.log(title)
+  var profPic = 'https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=392';
   return (
     <Card>
       <Card.Content style={{flexDirection:"row", justifyContent: "space-evenly"}}>
@@ -34,7 +43,18 @@ function Item({ title, profPic }) {
 
 
 export function LobbyWrapper({ route, navigation }) {
+  console.log(route.params)
+  const { username } = route.params;
+  const { isHost } = route.params;
+  const { lobbykey } = route.params;
 
+  console.log("username: " + username)
+
+  return (
+    <View style={styles.container}>
+      <Lobby navigation={navigation} username={username} isHost={isHost} lobbykey={lobbykey}/>
+    </View>
+  )
 }
 
 
@@ -42,37 +62,95 @@ class Lobby extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      players: []
     }
+    this.navigation = props.navigation;
     this.username = props.username;
-    this.lobbykey = props.username;
     this.isHost = props.isHost;
     this.lobbykey = props.lobbykey;
     this.canPlay = this.canPlay.bind(this);
+    this.isLobbyReady = this.isLobbyReady.bind(this)
   }
-  //join lobby in a componentDidMount method. the response will send back the list of players. Then, poll every second to find more players in lobby and if game has started
+
   componentDidMount() {
-    fetch('http://10.74.50.180:3000/joinlobby', {
+    this.interval = setInterval(this.isLobbyReady, 3000);
+    if(!this.isHost) {
+      fetch('http://10.74.50.180:3000/joinlobby', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"username": this.username, "lobbykey": this.lobbykey})
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          //this.state.players = responseJson.players;
+          this.setState({ players: responseJson.players })
+        })
+        .catch((error) => {
+           console.log(error);
+           Alert.alert("Failed to join lobby!")
+        });
+    }
+  }
+
+  isLobbyReady() {
+    console.log("here")
+    fetch('http://10.74.50.180:3000/lobbyready', {
       method: 'POST',
+      mode: 'cors',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({winner: this.state.selected})
+      body: JSON.stringify({"lobbykey": this.lobbykey})
     })
       .then((response) => response.json())
       .then((responseJson) => {
-         this.state.navigation.navigate('winner', { username: this.username, lobbykey: this.lobbykey })
+        //this.state.players = responseJson.players;
+        this.setState({ players: responseJson.players })
+         if (responseJson.started) {
+           clearInterval(this.interval)
+           this.navigation.navigate("GameWrapper", {username: this.username, lobbykey: this.lobbykey});
+         }
       })
       .catch((error) => {
          console.log(error);
+         Alert.alert("Failed to check if game started!")
       });
   }
 
-  canPlay(isHost, navigation, params) { //TO DO: Add stuff about picking decks!!!!!!!!!!!
-    if (this.state.isHost) {
+  canPlay(isHost, navigation, params) {
+    if (this.isHost) {
       return(
-        <TouchableOpacity style={{flex: 1, justifyContent: "center", alignItems: "center"}} onPress={() => this.state.navigation.navigate("GameWrapper", { username: this.state.username, lobbykey: this.state.lobbykey })}>
+        <TouchableOpacity style={{flex: 1, justifyContent: "center", alignItems: "center"}} onPress={() => {
+          fetch('http://10.74.50.180:3000/startgame', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"lobbykey": this.lobbykey})
+          })
+            .then((response) => response.json())
+            .then((responseJson) => {
+               if (responseJson.started) {
+                 //startgame
+                 clearInterval(this.interval)
+                 //this.navigation.navigate("GameWrapper", { username: this.username, lobbykey: this.lobbykey })
+                 this.state.navigation.dispatch(
+                   StackActions.replace('GameWrapper', {username: this.username, lobbykey: this.lobbykey})
+                 )
+               }
+            })
+            .catch((error) => {
+               console.log(error);
+            });
+
+        }}>
           <Text style={{color: "white"}}>CLICK TO START</Text>
         </TouchableOpacity>
       );
@@ -97,10 +175,10 @@ class Lobby extends Component {
 
           <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
             <Text style={{color: "white"}}>
-              {username}
+              {this.username}
             </Text>
             <Text style={{color: "white"}}>
-              {lobbykey}
+              {this.lobbykey}
             </Text>
           </View>
 
@@ -111,11 +189,14 @@ class Lobby extends Component {
 
 
 
+
+
         <View style={{flex: 1}}>
           <ScrollView style={{flex:1}}>
-            <FlatList data={DATA} renderItem={({ item }) => <Item title={item.title} profPic={item.profPic}/>} keyExtractor={item => item.id} />
+            <FlatList data={Object.keys(this.state.players)} renderItem={({ item }) => <Item title={item} />} keyExtractor={item => item.id} />
           </ScrollView>
         </View>
+
 
 
 
@@ -182,5 +263,38 @@ const styles = StyleSheet.create({
     flex: 1
   },
 
+  title: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: .8
+  },
 
+  titleText: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "#3f3f37",
+    color: "#dd977c",
+    fontSize: 35
+  },
+
+
+  loginContainer: {
+    //salignItems: 'center',
+
+  },
+
+  loginField: {
+    margin: 10
+  },
+
+  textField: {
+    margin: 10
+  },
+
+  button: {
+    alignItems: 'center',
+    backgroundColor: "#dd977c",
+    padding: 10,
+    margin: 10,
+    borderRadius: 3
+  }
 });

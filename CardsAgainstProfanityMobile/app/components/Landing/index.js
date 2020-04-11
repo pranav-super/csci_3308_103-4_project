@@ -9,7 +9,7 @@ export function Landing({route, navigation}) {
       <View style={styles.loginField}>
 
         <TouchableOpacity onPress={() => {
-          //create lobby with http request
+          /*//create lobby with http request
 
           fetch('http://10.74.50.180/createlobby', {
             method: 'POST',
@@ -27,8 +27,8 @@ export function Landing({route, navigation}) {
             .catch((error) => {
               console.log(error);
             });
-
-          //navigation.navigate("Lobby", {username: username, lobbykey: "randomly generated lobby key", isHost: true})}
+            */
+          navigation.navigate("DeckSelectWrapper", {username: username, isHost: true})}
         } style={styles.button}>
           <Text>start game.</Text>
         </TouchableOpacity>

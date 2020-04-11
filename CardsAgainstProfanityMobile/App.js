@@ -4,12 +4,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Login } from './app/components/Login/index.js';
 import { CreateAccount } from './app/components/Create User/index.js';
 import { Landing } from './app/components/Landing/index.js';
-import { Lobby } from './app/components/Lobby/index.js';
+import { LobbyWrapper } from './app/components/Lobby/index.js';
 import { GameWrapper } from './app/components/Game/index.js';
 import { JLobby } from './app/components/Join Lobby/index.js';
 import { Stats } from './app/components/Stats/index.js';
-import { SubmittedForJudges } from './app/components/SubmittedForJudges/index.js';
-import { SubmittedForPlayers } from './app/components/SubmittedForPlayers/index.js';
+import { DeckSelectWrapper } from './app/components/Landing/deck-select.js';
+import { JudgeWaitWrapper } from './app/components/Game/judge-wait.js';
+import { JudgeSelectWrapper } from './app/components/Game/judge-select.js';
+import { PlayerSelectWrapper } from './app/components/Game/player-select.js';
+import { PlayerWaitWrapper } from './app/components/Game/player-wait.js';
+import { WinnerWrapper } from './app/components/Game/winner.js';
+//import { SubmittedForJudges } from './app/components/SubmittedForJudges/index.js';
+//import { SubmittedForPlayers } from './app/components/SubmittedForPlayers/index.js';
 import { Scoreboard } from './app/components/Scoreboard/index.js';
 import { Chat } from './app/components/Chat/index.js';
 
@@ -42,15 +48,31 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
-        <Stack.Screen name="Lobby" component={Lobby} />
-        <Stack.Screen name="GameWrapper" component={GameWrapper} />
+
+
+        <Stack.Screen name="LobbyWrapper" component={LobbyWrapper} />
+        <Stack.Screen name="DeckSelectWrapper" component={DeckSelectWrapper} />
         <Stack.Screen name="JLobby" component={JLobby} />
+
+
+
+        <Stack.Screen name="GameWrapper" component={GameWrapper} />
+
+        <Stack.Screen name="PlayerSelectWrapper" component={PlayerSelectWrapper} />
+        <Stack.Screen name="PlayerWaitWrapper" component={PlayerWaitWrapper} />
+
+        <Stack.Screen name="JudgeSelectWrapper" component={JudgeSelectWrapper} />
+        <Stack.Screen name="JudgeWaitWrapper" component={JudgeWaitWrapper} />
+
+        <Stack.Screen name="WinnerWrapper" component={WinnerWrapper} />
+
+
+
         <Stack.Screen name="Stats" component={Stats} />
-        <Stack.Screen name="SubmittedForJudges" component={SubmittedForJudges} />
-        <Stack.Screen name="SubmittedForPlayers" component={SubmittedForPlayers} />
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="Scoreboard" component={Scoreboard} />
       </Stack.Navigator>

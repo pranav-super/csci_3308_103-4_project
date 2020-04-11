@@ -1,0 +1,22 @@
+CURL COMMANDS!!!
+
+To add a player to a lobby:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"\",  \"username\" : \"testUser!\" }" http://10.74.50.180:3000/joinlobby
+
+To submit, as a player:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"\",  \"username\" : \"testUser!\", \"selected\":[\"dog\",\"doggie\"]  }" http://10.74.50.180:3000/playerres
+
+To submit, as a judge:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"\",  \"winner\":[\"entry\"]  }" http://10.74.50.180:3000/judgeres
+
+To create a lobby:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"username\": \"testUser!\",  \"decks\":[\"Adult\", \"Kids\"]  }" http://10.74.50.180:3000/createlobby
+
+To start the lobby:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"\"}" http://10.74.50.180:3000/startgame
+
+
+
+NOTES ABOUT GLITCHES:
+SOMETIMES REACT NAVIGATION SCREWS UP, AND WON'T HANDLE REPLACE CORRECTLY. THIS IS A KNOWN BUG IN REACT NAVIGATION, SO NOTHING CAN BE DONE AS OF YET.
+THIS ALSO CAUSES SOME DATA TO UNNECESSARILY PERSIST!

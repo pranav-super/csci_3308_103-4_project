@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, ScrollView, FlatList, Image } from 'react-native';
+import {Dimensions} from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+
+import { StackActions } from '@react-navigation/native'
 
 import Carousel from "react-native-carousel-control";
 
@@ -8,7 +11,7 @@ import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
 
 
-const CARDS = [
+/*const CARDS = [
   {
     selected: false,
     value: "funny phrase"
@@ -26,11 +29,15 @@ const CARDS = [
 var selectedCards = [];
 
 
-
-class Item extends Component { /*the reason I haven't been using this syntax for everything is because react navigation won't work with it at the moment */
+*/
+export class Item extends Component { /*the reason I haven't been using this syntax for everything is because react navigation won't work with it at the moment */
 
   constructor(props) {
     super(props);
+
+    console.log("PROPS")
+    console.log(props)
+
     this.state = {
       index: props.index,
       value: props.value,
@@ -86,7 +93,7 @@ class Item extends Component { /*the reason I haven't been using this syntax for
 
 
 
-class Timer extends Component {
+export class Timer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -124,7 +131,7 @@ class Timer extends Component {
             backgroundColorOnComplete="#6CC644"
             backgroundColor="green"
             width={width}
-            barAnimationDuration={1000}
+            barAnimationDuration={30000}
             onComplete={() => {
               this.props.handler() //http post request
             }}
@@ -232,18 +239,19 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => this.getUpdate(), 1000);
+    this.timer = setInterval(() => this.getUpdate(), 6000);
   }
 
   getUpdate() {
     //fetch
     fetch('http://10.74.50.180:3000/role', {
       method: 'POST',
+      mode: 'cors',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({username: this.username})
+      body: JSON.stringify({"username": this.username, "lobbykey": this.lobbykey})
     })
       .then((response) => response.json())
       .then((responseJson) => {
@@ -254,11 +262,18 @@ class Game extends Component {
             prompt: responseJson.prompt,
             myState: responseJson.myState
          })*/
+         clearInterval(this.timer);
          if (responseJson.role == 'judge') {
-           this.state.navigation.navigate("judge-wait", {username: state.username, lobbykey: state.password});
+           this.state.navigation.dispatch(
+             StackActions.replace('JudgeWaitWrapper', {username: this.username, lobbykey: this.lobbykey})
+           )
+           //this.state.navigation.navigate("JudgeWaitWrapper", {username: this.username, lobbykey: this.lobbykey});
          }
          else {
-           this.state.navigation.navigate("player-select", {username: state.username, lobbykey: state.password});
+           this.state.navigation.dispatch(
+             StackActions.replace('PlayerSelectWrapper', {username: this.username, lobbykey: this.lobbykey})
+           )
+           //this.state.navigation.navigate("PlayerSelectWrapper", {username: this.username, lobbykey: this.lobbykey});
          }
 
 
@@ -270,24 +285,27 @@ class Game extends Component {
 
   render() {
 
+
+  //this.timer = setInterval(() => this.getUpdate(), 6000);
+
    return (
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
         <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
           <Text style={{color: "white"}}>
-            {this.state.username}
+            {this.username}
           </Text>
           <Text style={{color: "white"}}>
-            {this.state.lobbykey}
+            {this.lobbykey}
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>

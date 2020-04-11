@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, Image } from 'react-native';
 
+import { StackActions } from '@react-navigation/native'
+
+
 function Invalid(attemptedSubmit) {
   if (attemptedSubmit) {
     console.log("Here, attemptedSubmit");
@@ -42,12 +45,36 @@ export function JLobby({ route, navigation }) {
           </View>
 
           <TouchableOpacity onPress={() => {
-            if (lobbykey != "") {
+            fetch('http://10.74.50.180:3000/verifylobby', {
+              method: 'POST',
+              mode: 'cors',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({"lobbykey": lobbykey})
+            })
+              .then((response) => response.json())
+              .then((responseJson) => {
+                 if(responseJson.valid) {
+                   //navigation.navigate("LobbyWrapper", {username: username, lobbykey: lobbykey, isHost: false})
+                   this.state.navigation.dispatch(
+                     StackActions.replace('LobbyWrapper', {username: username, lobbykey: lobbykey, isHost: false})
+                   )
+                 }
+                 else {
+                   setAttemptedsubmit(true)
+                 }
+              })
+              .catch((error) => {
+                 console.log(error);
+              });
+            /*if (lobbykey != "") {
               navigation.navigate("Lobby", {username: username, lobbykey: lobbykey, isHost: false})
             }
             else {
               setAttemptedsubmit(true)
-            }
+            }*/
 
           }} style={styles.button}>
             <Text>Log in!</Text>

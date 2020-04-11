@@ -7,7 +7,9 @@ import Carousel from "react-native-carousel-control";
 
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
-export function PlayerSelectWrapper({ route, navigation }) {
+import { StackActions } from '@react-navigation/native'
+
+export function JudgeSelectWrapper({ route, navigation }) {
 
   var { username } = route.params;
   var { lobbykey } = route.params;
@@ -18,19 +20,20 @@ export function PlayerSelectWrapper({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <PlayerSelect navigation={navigation} username={username} lobbykey={lobbykey} />
+      <JudgeSelect navigation={navigation} username={username} lobbykey={lobbykey} />
     </View>
   );
 }
 
-class PlayerSelect extends Component {
+
+class JudgeSelect extends Component {
 
   constructor(props) {
     super(props);
     //this.state = props.gameState;
     this.state = {
       navigation: props.navigation,
-      cards: null,
+      cards: [],
       prompt: {
 
       },
@@ -61,7 +64,15 @@ class PlayerSelect extends Component {
 
   componentDidMount() {
     //fetch cards
-    fetch('http://10.74.50.180:3000/judgeselectstate')
+    fetch('http://10.74.50.180:3000/judgeselectstate', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"lobbykey": this.lobbykey})
+    })
       .then((response) => response.json())
       .then((responseJson) => {
          console.log(responseJson);
@@ -79,38 +90,42 @@ class PlayerSelect extends Component {
 
   render() {
 
+    console.log(this.state.cards)
+
    return (
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
         <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
           <Text style={{color: "white"}}>
-            {this.state.username}
+            {this.username}
           </Text>
           <Text style={{color: "white"}}>
-            {this.state.lobbykey}
+            {this.lobbykey}
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>
 
-      <View>
+      <View style={{flex: 1}}>
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <ScrollView>
               {
                 this.state.cards.map((card, index) => {
+                  console.log("CARD: " + card)
+
                   return(
                     <View>
                       <View><Text> </Text></View>
-                      <Item value={card.value} selectCard={this.selectCard} removeCard={this.removeCard} index={index}/>
+                        <Item value={card} selectCard={this.selectCard} removeCard={this.removeCard} index={index}/>
                       <View><Text> </Text></View>
                     </View>
                   );
@@ -121,8 +136,8 @@ class PlayerSelect extends Component {
         </View>
 
 
-        <View>
-          <Timer handler={this.timerHandler}>
+        <View style={{flex:0.15}}>
+          <Timer handler={this.timerHandler} />
         </View>
 
         <TouchableOpacity style={{backgroundColor: "green", flex:0.15}} onPress={() => {
@@ -131,15 +146,19 @@ class PlayerSelect extends Component {
             //HTTP request, send winner to judgeres
             fetch('http://10.74.50.180:3000/judgeres', {
               method: 'POST',
+              mode: 'cors',
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify({winner: this.state.selected})
+              body: JSON.stringify({"winner": this.state.selected, "lobbykey": this.lobbykey})
             })
               .then((response) => response.json())
               .then((responseJson) => {
-                 this.state.navigation.navigate('winner', { username: this.username, lobbykey: this.lobbykey })
+                 this.state.navigation.navigate('WinnerWrapper', { username: this.username, lobbykey: this.lobbykey })
+                 /*this.state.navigation.dispatch(
+                   StackActions.replace('WinnerWrapper', {username: this.username, lobbykey: this.lobbykey})
+                 )*/
               })
               .catch((error) => {
                  console.log(error);
@@ -148,10 +167,10 @@ class PlayerSelect extends Component {
           }
           else if (selectedCards.length > 1) {
             //if not, alert
-            Alert.alert("Too many cards selected!");
+            Alert.alert("There can only be one.");
           }
           else {
-            Alert.alert("Too few cards selected!");
+            Alert.alert("Pick a winner!");
           }
         }}>
           <Text>Submit</Text>
@@ -166,3 +185,47 @@ class PlayerSelect extends Component {
    );
   }
 }
+
+const styles = StyleSheet.create({
+
+  container: {
+    backgroundColor: "#ddd2ce",
+    justifyContent: 'flex-start',
+    flex: 1
+  },
+
+  title: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: .8
+  },
+
+  titleText: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "#3f3f37",
+    color: "#dd977c",
+    fontSize: 35
+  },
+
+
+  loginContainer: {
+    //salignItems: 'center',
+
+  },
+
+  loginField: {
+    margin: 10
+  },
+
+  textField: {
+    margin: 10
+  },
+
+  button: {
+    alignItems: 'center',
+    backgroundColor: "#dd977c",
+    padding: 10,
+    margin: 10,
+    borderRadius: 3
+  }
+});
