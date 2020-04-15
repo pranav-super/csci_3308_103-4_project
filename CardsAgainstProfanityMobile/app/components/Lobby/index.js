@@ -113,7 +113,9 @@ class Lobby extends Component {
         this.setState({ players: responseJson.players })
          if (responseJson.started) {
            clearInterval(this.interval)
-           this.navigation.navigate("GameWrapper", {username: this.username, lobbykey: this.lobbykey});
+           this.navigation.dispatch(
+             StackActions.replace('GameWrapper', {username: this.username, lobbykey: this.lobbykey})
+           )
          }
       })
       .catch((error) => {
@@ -122,7 +124,7 @@ class Lobby extends Component {
       });
   }
 
-  canPlay(isHost, navigation, params) {
+  canPlay() {
     if (this.isHost) {
       return(
         <TouchableOpacity style={{flex: 1, justifyContent: "center", alignItems: "center"}} onPress={() => {
@@ -141,7 +143,7 @@ class Lobby extends Component {
                  //startgame
                  clearInterval(this.interval)
                  //this.navigation.navigate("GameWrapper", { username: this.username, lobbykey: this.lobbykey })
-                 this.state.navigation.dispatch(
+                 this.navigation.dispatch(
                    StackActions.replace('GameWrapper', {username: this.username, lobbykey: this.lobbykey})
                  )
                }
@@ -168,22 +170,22 @@ class Lobby extends Component {
     return(
       <View style={styles.container}>
 
-        <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-          <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Chat")}>
-            <Text> Chat </Text>
+        <View style={{backgroundColor: "black", flex:0.15, flexDirection: "row"}}>
+          <TouchableOpacity style={{flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Chat", {"username": this.username, "lobbykey": this.lobbykey})}>
+            <Image style={{width: "100%", height: "100%"}} source={{uri: 'https://us.123rf.com/450wm/fokaspokas/fokaspokas1804/fokaspokas180400019/98531966-a-chat-icon-on-white-icon-on-black-background-.jpg?ver=6'}}/>
           </TouchableOpacity>
 
           <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
-            <Text style={{color: "white"}}>
+            <Text style={styles.titleText}>
               {this.username}
             </Text>
-            <Text style={{color: "white"}}>
-              {this.lobbykey}
+            <Text style={styles.titleText}>
+              lobby: {this.lobbykey}
             </Text>
           </View>
 
-          <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.navigate("Scoreboard")}>
-            <Text> Scoreboard </Text>
+          <TouchableOpacity style={{backgroundColor: "black", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Scoreboard", {"lobbykey": this.lobbykey})}>
+            <Image style={{width: "100%", height: "100%"}} source={{uri: 'https://previews.123rf.com/images/jovanas/jovanas1908/jovanas190800249/128778639-scoreboard-icon-on-dark-background.jpg'}}/>
           </TouchableOpacity>
         </View>
 
@@ -200,7 +202,7 @@ class Lobby extends Component {
 
 
 
-        <View style={{backgroundColor: "blue", flex:0.15}}>
+        <View style={{backgroundColor: "black", flex:0.15}}>
           {this.canPlay()}
         </View>
       </View>
@@ -257,8 +259,15 @@ class Lobby extends Component {
 
 const styles = StyleSheet.create({
 
+  invalid: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "red",
+    color: "white",
+    fontSize: 15
+  },
+
   container: {
-    backgroundColor: "#ddd2ce",
+    backgroundColor: "white",
     justifyContent: 'flex-start',
     flex: 1
   },
@@ -271,9 +280,9 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontFamily: "sans-serif-light",
-    backgroundColor: "#3f3f37",
-    color: "#dd977c",
-    fontSize: 35
+    backgroundColor: "black",
+    color: "white",
+    fontSize: 20
   },
 
 
@@ -287,12 +296,13 @@ const styles = StyleSheet.create({
   },
 
   textField: {
-    margin: 10
+    margin: 10,
+    backgroundColor: "white"
   },
 
   button: {
     alignItems: 'center',
-    backgroundColor: "#dd977c",
+    backgroundColor: "grey",
     padding: 10,
     margin: 10,
     borderRadius: 3

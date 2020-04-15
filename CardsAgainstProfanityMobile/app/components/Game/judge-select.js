@@ -32,7 +32,6 @@ class JudgeSelect extends Component {
     super(props);
     //this.state = props.gameState;
     this.state = {
-      navigation: props.navigation,
       cards: [],
       prompt: {
 
@@ -41,6 +40,7 @@ class JudgeSelect extends Component {
 
       ]
     }
+    this.navigation = props.navigation;
     this.username = props.username;
     this.lobbykey = props.lobbykey;
     this.timerHandler = this.timerHandler.bind(this);
@@ -96,7 +96,7 @@ class JudgeSelect extends Component {
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Chat", {"username": this.username, "lobbykey": this.lobbykey})}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
@@ -109,7 +109,7 @@ class JudgeSelect extends Component {
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Scoreboard", {"lobbykey": this.lobbykey})}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>
@@ -155,7 +155,7 @@ class JudgeSelect extends Component {
             })
               .then((response) => response.json())
               .then((responseJson) => {
-                 this.state.navigation.navigate('WinnerWrapper', { username: this.username, lobbykey: this.lobbykey })
+                 this.navigation.navigate('WinnerWrapper', { username: this.username, lobbykey: this.lobbykey })
                  /*this.state.navigation.dispatch(
                    StackActions.replace('WinnerWrapper', {username: this.username, lobbykey: this.lobbykey})
                  )*/
@@ -165,7 +165,7 @@ class JudgeSelect extends Component {
               });
             //navigation.navigate("SubmittedForPlayers", {username: username, lobbykey: lobbykey, cards: selectedCards});
           }
-          else if (selectedCards.length > 1) {
+          else if (this.state.selected.length > 1) {
             //if not, alert
             Alert.alert("There can only be one.");
           }

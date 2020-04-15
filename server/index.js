@@ -242,8 +242,27 @@ app.post('/judgeselectstate', (req, res) => {
 /*this will post a lobbykey. This would be used whenever a user opens their
 scoreboard, which would warrant an update. This will respond with an updated
 scoreboard.*/
-app.post('/updatescoreboard', (req, res) => { //TO DO
-  //TO DO
+app.post('/updatescoreboard', (req, res) => {
+  lobbykey = req.body.lobbykey;
+
+  res.json({
+    scoreboard: gameState[lobbykey].scoreboard
+  })
+})
+
+
+
+/*this will post a lobbykey, and a new message. This would be used whenever a
+user sends a message. This will respond with an updated chat/list of
+messages.*/
+app.post('/sendchat', (req, res) => {
+  message = req.body.message;
+  lobbykey = req.body.lobbykey;
+
+  gameState[lobbykey].chat.push(message);
+  res.json({
+    chat: gameState[lobbykey].chat
+  })
 })
 
 
@@ -251,8 +270,12 @@ app.post('/updatescoreboard', (req, res) => { //TO DO
 /*this will post a lobbykey. This would be used whenever a user opens their chat,
 which would warrant an update. This will respond with an updated chat/list of
 messages.*/
-app.post('/updatechat', (req, res) => { //TO DO
-  //TO DO
+app.post('/updatechat', (req, res) => {
+  lobbykey = req.body.lobbykey;
+
+  res.json({
+    chat: gameState[lobbykey].chat
+  })
 })
 
 
@@ -304,6 +327,16 @@ app.post('/judgeres', (req, res) => {
     player: winningPlayer,
     value: req.body.winner[0]
   }
+
+  //update scoreboard
+  for (var i = 0; i < gameState[lobbykey].scoreboard.length; i++) {
+    if(gameState[lobbykey].scoreboard[i].username == winningPlayer) {
+      gameState[lobbykey].scoreboard[i].score += 1;
+      break;
+    }
+  }
+  gameState.sort((a,b) => a.score-b.score);
+
   res.json({
     completed: true
   })
@@ -426,6 +459,13 @@ app.post('/createlobby', (req, res) => {
 
     ],
 
+    scoreboard: [
+      {
+        username: username,
+        score: 0
+      }
+    ],
+
     prompt: {
       text: "",
       numSlots: -1,
@@ -467,6 +507,11 @@ app.post('/joinlobby', (req, res) => {
     role: "player",
     status: "WAITING"
   }
+
+  gameState[lobbykey].scoreboard.push({
+    username: [username],
+    score: 0
+  })
 
   res.json({
     players: gameState[lobbykey].players

@@ -31,7 +31,6 @@ class PlayerSelect extends Component {
     super(props);
     //this.state = props.gameState;
     this.state = {
-      navigation: props.navigation,
       cards: [],
       prompt: {
 
@@ -40,6 +39,7 @@ class PlayerSelect extends Component {
 
       ]
     }
+    this.navigation = props.navigation;
     this.username = props.username;
     this.lobbykey = props.lobbykey;
     this.timerHandler = this.timerHandler.bind(this);
@@ -71,7 +71,7 @@ class PlayerSelect extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
          //this.state.navigation.navigate('PlayerWaitWrapper', { username: this.username, lobbykey: this.lobbykey })
-         this.state.navigation.dispatch(
+         this.navigation.dispatch(
            StackActions.replace('PlayerWaitWrapper', {username: this.username, lobbykey: this.lobbykey})
          )
       })
@@ -112,7 +112,7 @@ class PlayerSelect extends Component {
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Chat", {"username": this.username, "lobbykey": this.lobbykey})}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
@@ -125,7 +125,7 @@ class PlayerSelect extends Component {
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Scoreboard", {"lobbykey": this.lobbykey})}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>

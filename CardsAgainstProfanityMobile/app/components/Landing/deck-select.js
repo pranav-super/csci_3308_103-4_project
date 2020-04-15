@@ -21,8 +21,8 @@ function DeckCheckbox({ title, onCheck }) {
     <CheckBox
       title={title}
       checked={checked}
-      checkedIcon={{name: 'envira', type: 'font-awesome'}}
-      uncheckedIcon={{name: 'envira', type: 'font-awesome'}}
+      checkedIcon={"check"}
+      uncheckedIcon={"check"}
       onPress={() => {
         let newVal = !checked;
         setChecked(newVal);
@@ -71,7 +71,7 @@ class DeckSelect extends Component {
           </ScrollView>
         </View>
         <View style={{flex: 0.15}}>
-          <TouchableOpacity style={{flex: 1, justifyContent: "center", alignItems: "center"}} onPress={() => {
+          <TouchableOpacity style={{backgroundColor: "white", flex: 1, justifyContent: "center", alignItems: "center"}} onPress={() => {
                       if (this.state.decks.length == 0) {
                         Alert.alert("Please select a deck (or more)!");
                       }
@@ -91,7 +91,7 @@ class DeckSelect extends Component {
                           .then((responseJson) => {
                              console.log(responseJson);
                              //this.navigation.navigate("LobbyWrapper", {username: this.username, isHost: true, lobbykey: responseJson.lobbykey});
-                             this.state.navigation.dispatch(
+                             this.navigation.dispatch(
                                StackActions.replace('LobbyWrapper', {username: this.username, isHost: true, lobbykey: responseJson.lobbykey})
                              )
                           })
@@ -101,7 +101,7 @@ class DeckSelect extends Component {
                           });
                       }
                   }}>
-            <Text style={{color: "white"}}>CREATE THE LOBBY</Text>
+            <Text style={{color: "black"}}>CREATE THE LOBBY</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -125,8 +125,15 @@ export function DeckSelectWrapper({ route, navigation }) {
 
 const styles = StyleSheet.create({
 
+  invalid: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "red",
+    color: "white",
+    fontSize: 15
+  },
+
   container: {
-    backgroundColor: "#ddd2ce",
+    backgroundColor: "black",
     justifyContent: 'flex-start',
     flex: 1
   },
@@ -139,8 +146,8 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontFamily: "sans-serif-light",
-    backgroundColor: "#3f3f37",
-    color: "#dd977c",
+    backgroundColor: "black",
+    color: "white",
     fontSize: 35
   },
 
@@ -155,12 +162,13 @@ const styles = StyleSheet.create({
   },
 
   textField: {
-    margin: 10
+    margin: 10,
+    backgroundColor: "white"
   },
 
   button: {
     alignItems: 'center',
-    backgroundColor: "#dd977c",
+    backgroundColor: "grey",
     padding: 10,
     margin: 10,
     borderRadius: 3

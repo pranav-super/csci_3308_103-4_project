@@ -16,8 +16,8 @@ import { PlayerWaitWrapper } from './app/components/Game/player-wait.js';
 import { WinnerWrapper } from './app/components/Game/winner.js';
 //import { SubmittedForJudges } from './app/components/SubmittedForJudges/index.js';
 //import { SubmittedForPlayers } from './app/components/SubmittedForPlayers/index.js';
-import { Scoreboard } from './app/components/Scoreboard/index.js';
-import { Chat } from './app/components/Chat/index.js';
+import { ChatWrapperWrapper } from './app/components/Chat/index.js';
+import { ScoreboardWrapperWrapper } from './app/components/Scoreboard/index.js';
 
 
 /*function DetailsScreen({ route,navigation }) {
@@ -73,8 +73,8 @@ function App() {
 
 
         <Stack.Screen name="Stats" component={Stats} />
-        <Stack.Screen name="Chat" component={Chat} />
-        <Stack.Screen name="Scoreboard" component={Scoreboard} />
+        <Stack.Screen name="Chat" component={ChatWrapperWrapper} />
+        <Stack.Screen name="Scoreboard" component={ScoreboardWrapperWrapper} />
       </Stack.Navigator>
     </NavigationContainer>
   );

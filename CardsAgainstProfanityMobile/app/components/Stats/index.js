@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, ScrollView, FlatList, Image } from 'react-native';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph, DataTable } from 'react-native-paper';
 
 
 
@@ -30,13 +30,10 @@ export function Stats({ route,navigation }) {
   return (
       <View style={styles.container}>
 
-        <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
+        <View style={{backgroundColor: "black", flex:0.15, flexDirection: "row"}}>
           <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
-            <Text style={{color: "white"}}>
-              STATS:
-            </Text>
-            <Text style={{color: "white"}}>
-              {username}
+            <Text style={styles.titleText}>
+              STATS: {username}
             </Text>
           </View>
         </View>
@@ -44,8 +41,23 @@ export function Stats({ route,navigation }) {
 
 
         <View style={{flex: 1}}>
-          <ScrollView style={{flex:1}}>
-            <FlatList data={STATS} renderItem={({ item }) => <Text>{item.statName}: {item.value}</Text>} keyExtractor={item => item.id} />
+          <ScrollView>
+              <DataTable>
+                <DataTable.Header>
+                  <DataTable.Title>Statistic</DataTable.Title>
+                  <DataTable.Title numeric>Value</DataTable.Title>
+                </DataTable.Header>
+                {
+                  STATS.map((item, index) => {
+                    return(
+                      <DataTable.Row>
+                        <DataTable.Cell>{item.statName}</DataTable.Cell>
+                        <DataTable.Cell numeric>{item.value}</DataTable.Cell>
+                      </DataTable.Row>
+                    )
+                  })
+                }
+              </DataTable>
           </ScrollView>
         </View>
 
@@ -55,8 +67,15 @@ export function Stats({ route,navigation }) {
 
 const styles = StyleSheet.create({
 
+  invalid: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "red",
+    color: "white",
+    fontSize: 15
+  },
+
   container: {
-    backgroundColor: "#ddd2ce",
+    backgroundColor: "white",
     justifyContent: 'flex-start',
     flex: 1
   },
@@ -69,8 +88,8 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontFamily: "sans-serif-light",
-    backgroundColor: "#3f3f37",
-    color: "#dd977c",
+    backgroundColor: "black",
+    color: "white",
     fontSize: 35
   },
 
@@ -85,12 +104,13 @@ const styles = StyleSheet.create({
   },
 
   textField: {
-    margin: 10
+    margin: 10,
+    backgroundColor: "white"
   },
 
   button: {
     alignItems: 'center',
-    backgroundColor: "#dd977c",
+    backgroundColor: "grey",
     padding: 10,
     margin: 10,
     borderRadius: 3

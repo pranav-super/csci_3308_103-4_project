@@ -57,10 +57,10 @@ export function JLobby({ route, navigation }) {
               .then((response) => response.json())
               .then((responseJson) => {
                  if(responseJson.valid) {
-                   //navigation.navigate("LobbyWrapper", {username: username, lobbykey: lobbykey, isHost: false})
-                   this.state.navigation.dispatch(
+                   navigation.navigate("LobbyWrapper", {username: username, lobbykey: lobbykey, isHost: false})
+                   /*navigation.dispatch(
                      StackActions.replace('LobbyWrapper', {username: username, lobbykey: lobbykey, isHost: false})
-                   )
+                   )*/
                  }
                  else {
                    setAttemptedsubmit(true)
