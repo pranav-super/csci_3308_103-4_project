@@ -34,18 +34,18 @@ class ChatWrapper extends Component {
     return (
         <View style={styles.container}>
 
-            <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-                <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.pop()}>
-                    <Text> Go back </Text>
+            <View style={{backgroundColor: "black", flex:0.15, flexDirection: "row"}}>
+                <TouchableOpacity style={{backgroundColor: "white", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.pop()}>
+                    <Image style={{width: "100%", height: "100%"}} source={{uri: 'https://lh3.googleusercontent.com/proxy/BIOIx-ejLU0gAusXvvtBkUpDlpd1vij0f6QAb-S1N77uPnTZIis72sN3EWgjgfCYdQHTZeWYfs_5vOpOAJF8xKu8qLn7HzdkXpFMpvSr_jlhfi1FWQb2UoHaigg0FttrpXEsCUw-WFIH-zSGQtlwmNo'}}/>
                 </TouchableOpacity>
 
                 <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
-                    <Text style={{color: "white"}}>
+                    <Text style={styles.titleText}>
                         CHAT
                     </Text>
                 </View>
 
-                <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => {
+                <TouchableOpacity style={{backgroundColor: "black", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => {
                   fetch('http://10.74.50.180:3000/updatechat', {
                     method: 'POST',
                     mode: 'cors',
@@ -65,7 +65,7 @@ class ChatWrapper extends Component {
                        console.log(error);
                     });
                 }}>
-                    <Image source={{uri: 'https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/reload-512.png'}}/>
+                    <Image style={{width: "90%", height: "90%"}} source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRkVP28Mti-0t6WC9m0HdPY6GPKUx1MmFpJbC_gOPNAkfiDuEeA&usqp=CAU'}}/>
                 </TouchableOpacity>
             </View>
 
@@ -208,8 +208,7 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontFamily: "sans-serif-light",
-    backgroundColor: "#3f3f37",
-    color: "#dd977c",
+    color: "white",
     fontSize: 35
   },
 
