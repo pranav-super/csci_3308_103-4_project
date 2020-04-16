@@ -95,22 +95,22 @@ class JudgeSelect extends Component {
    return (
     <View style={styles.container}>
 
-      <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Chat", {"username": this.username, "lobbykey": this.lobbykey})}>
-          <Text> Chat </Text>
+      <View style={{backgroundColor: "black", flex:0.15, flexDirection: "row"}}>
+        <TouchableOpacity style={{flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Chat", {"username": this.username, "lobbykey": this.lobbykey})}>
+          <Image style={{width: "100%", height: "100%"}} source={{uri: 'https://us.123rf.com/450wm/fokaspokas/fokaspokas1804/fokaspokas180400019/98531966-a-chat-icon-on-white-icon-on-black-background-.jpg?ver=6'}}/>
         </TouchableOpacity>
 
         <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
-          <Text style={{color: "white"}}>
+          <Text style={styles.titleText}>
             {this.username}
           </Text>
-          <Text style={{color: "white"}}>
-            {this.lobbykey}
+          <Text style={styles.titleText}>
+            lobby: {this.lobbykey}
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Scoreboard", {"lobbykey": this.lobbykey})}>
-          <Text> Scoreboard </Text>
+        <TouchableOpacity style={{backgroundColor: "black", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Scoreboard", {"lobbykey": this.lobbykey})}>
+          <Image style={{width: "100%", height: "100%"}} source={{uri: 'https://previews.123rf.com/images/jovanas/jovanas1908/jovanas190800249/128778639-scoreboard-icon-on-dark-background.jpg'}}/>
         </TouchableOpacity>
       </View>
 
@@ -140,7 +140,7 @@ class JudgeSelect extends Component {
           <Timer handler={this.timerHandler} />
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "green", flex:0.15}} onPress={() => {
+        <TouchableOpacity style={{backgroundColor: "black", flex: 0.15, justifyContent: "center", alignItems: "center"}} onPress={() => {
           //verify number of cards selected is right
           if (this.state.selected.length == 1) {
             //HTTP request, send winner to judgeres
@@ -173,12 +173,12 @@ class JudgeSelect extends Component {
             Alert.alert("Pick a winner!");
           }
         }}>
-          <Text>Submit</Text>
+          <Text style={{color: "white"}}>Submit</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={{backgroundColor: "blue", flex:0.15}}>
-        <Text>{this.state.prompt.text}</Text>
+      <View style={{backgroundColor: "white", flex: 0.15, alignItems: "center"}}>
+        <Text style={{color:"black"}}>{this.state.prompt.text}</Text>
       </View>
 
     </View>
@@ -202,9 +202,9 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontFamily: "sans-serif-light",
-    backgroundColor: "#3f3f37",
-    color: "#dd977c",
-    fontSize: 35
+    backgroundColor: "black",
+    color: "white",
+    fontSize: 20
   },
 
 
