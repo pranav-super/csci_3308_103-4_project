@@ -168,13 +168,6 @@ app.post('/role', (req, res) => {
   let lobbykey = req.body.lobbykey;
   let username = req.body.username;
 
-  /*if (username != "P") {
-    gameState[lobbykey].players[username].role = "judge"
-  }
-  else {
-    gameState[lobbykey].players[username].role = "player"
-  }*/
-
   res.json({
     role: gameState[lobbykey].players[username].role
   })
@@ -356,7 +349,7 @@ app.post('/judgeres', (req, res) => {
       break;
     }
   }
-  gameState.sort((a,b) => a.score-b.score);
+  gameState[lobbykey].scoreboard.sort((a,b) => a.score-b.score);
 
   res.json({
     completed: true
