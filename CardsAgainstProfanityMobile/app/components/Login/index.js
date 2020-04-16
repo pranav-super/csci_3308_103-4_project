@@ -49,7 +49,7 @@ export function Login({ navigation }) {
           <TouchableOpacity onPress={() => {
                 if (username != "" && password != "") {
                   setAttemptedsubmit(false)
-                  fetch('http://10.74.50.180:3000/newuser', {
+                  /*fetch('http://10.74.50.180:3000/newuser', {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -60,13 +60,13 @@ export function Login({ navigation }) {
                   })
                     .then((response) => response.json())
                     .then((responseJson) => {
-                      if(responseJson.success == true) {
-                        navigation.navigate("Landing", {username: username, password: password})
+                      if(responseJson.success == true) {*/
+                        navigation.navigate("Landing", {username: username, password: password})/*
                       }
                     })
                     .catch((error) => {
                        console.log(error);
-                    });
+                    });*/
                 }
                 else {
                   setAttemptedsubmit(true)
