@@ -7,7 +7,7 @@ import { Landing } from './app/components/Landing/index.js';
 import { LobbyWrapper } from './app/components/Lobby/index.js';
 import { GameWrapper } from './app/components/Game/index.js';
 import { JLobby } from './app/components/Join Lobby/index.js';
-import { Stats } from './app/components/Stats/index.js';
+import { StatsWrapper } from './app/components/Stats/index.js';
 import { DeckSelectWrapper } from './app/components/Landing/deck-select.js';
 import { JudgeWaitWrapper } from './app/components/Game/judge-wait.js';
 import { JudgeSelectWrapper } from './app/components/Game/judge-select.js';
@@ -72,7 +72,7 @@ function App() {
 
 
 
-        <Stack.Screen name="Stats" component={Stats} />
+        <Stack.Screen name="Stats" component={StatsWrapper} />
         <Stack.Screen name="Chat" component={ChatWrapperWrapper} />
         <Stack.Screen name="Scoreboard" component={ScoreboardWrapperWrapper} />
       </Stack.Navigator>

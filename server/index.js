@@ -54,10 +54,13 @@ var promptDecks = {
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "4v3ry$3CUR3p4$$w0rd!", //this is using my credentials for username and password.
+  password: "password", //this is using my credentials for username and password.
   database: "game_db"
 });
 
+con.connect(function(err) {
+  if (err) throw err;
+});
 
 var gameState = {
   defaultValue: 1
@@ -71,13 +74,6 @@ var gameState = {
 app.post('/role', (req, res) => {
   let lobbykey = req.body.lobbykey;
   let username = req.body.username;
-
-  /*if (username != "P") {
-    gameState[lobbykey].players[username].role = "judge"
-  }
-  else {
-    gameState[lobbykey].players[username].role = "player"
-  }*/
 
   res.json({
     role: gameState[lobbykey].players[username].role
@@ -260,7 +256,7 @@ app.post('/judgeres', (req, res) => {
       break;
     }
   }
-  gameState.sort((a,b) => a.score-b.score);
+  gameState[lobbykey].scoreboard.sort((a,b) => a.score-b.score);
 
   res.json({
     completed: true
@@ -311,7 +307,7 @@ app.post('/winner', (req, res) => { //grab the winner, update state
       //send query using the username, which will be playername, and update them based on their scores
       //their total games played should be + 1
       //wanna update games won or lost, a boolean stored in won/lost
-      var winOrLose = winnerName == playerName;
+      var win = winnerName == playerName;
 
       //wanna update topic cards won, stored in topics won
       //their topic cards that they won, so their score:
@@ -321,16 +317,19 @@ app.post('/winner', (req, res) => { //grab the winner, update state
           topicsWon = playerScore.score;
         }
       }
-      //connect to swql database
-      con.connect(function(err) {
-        if (err) throw err;
-        con.query("UPDATE Users SET Games_won = Games_won + 1 SET Games_played = Games_played + 1", function (err, result, fields) {
+      if(win) {
+        //connect to swql database
+        con.query("UPDATE Users SET Games_won = Games_won + 1, Games_played = Games_played + 1, Topic_cards_won = Topic_cards_won + " + topicsWon.toString() + " WHERE Username=" + playerName + ";", function (err, result, fields) {
           if (err) throw err;
           console.log("User Stats updated. check sql server to verify stat update.");
-
-          });
-          con.end();
-      });
+        });
+      }
+      else {
+        con.query("UPDATE Users SET Games_lost = Games_lost + 1, Games_played = Games_played + 1, Topic_cards_won = Topic_cards_won + " + topicsWon.toString() + " WHERE Username=" + playerName + ";", function (err, result, fields) {
+          if (err) throw err;
+          console.log("User Stats updated. check sql server to verify stat update.");
+        });
+      }
     }
 
     res.json({
@@ -552,7 +551,7 @@ app.post('/startgame', (req, res) => {
 app.post('/verifylobby', (req, res) => {
   var lobbykey = req.body.lobbykey;
 
-  res.send({valid: gameState.hasOwnProperty(lobbykey)});
+  res.json({valid: gameState.hasOwnProperty(lobbykey)});
 })
 
 
@@ -566,23 +565,18 @@ app.post('/verifyuser', (req, res) => { //TO DO
   var password = req.body.password;
 
   var passwordHash = crypto.createHash('sha1').update(password).digest('hex'); //https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
-
+  console.log(passwordHash);
   //DO SOME REQUEST HERE, CHECK IF THERE IS A USER IN DB WITH THAT HASH
 
-  con.connect(function(err) {
+  con.query("SELECT Username, Password FROM Users WHERE Username = \'" + username + "\' AND Password = \'" + passwordHash + "\';", function (err, result, fields) {
     if (err) throw err;
-    con.query("SELECT Username, Password FROM Users WHERE Username = \'" + username + "\' AND Password = \'" + password + "\'", function (err, result, fields) {
-      if (err) throw err;
-      if (result = ' ') {   // if no result for matching username and pass
-          console.log("USERNAME AND/OR PASSWORD NOT FOUND. PLEASE TRY AGAIN\n");
-          res.json({success:false})
-      } else { // assumes something was returned
-          res.json({success: true})
-          console.log(result)
-      }
-      console.log("Results from Query: " + result);
-    });
-    con.end()
+    if (result == ' ') {   // if no result for matching username and pass
+      console.log("USERNAME AND/OR PASSWORD NOT FOUND. PLEASE TRY AGAIN\n");
+      res.json({success:false})
+    } else { // assumes something was returned
+      res.json({success: true})
+      console.log(result)
+    }
   });
   //con.end();    //terminate connection with db
 
@@ -596,15 +590,16 @@ app.post('/newuser', (req, res) => { //TO DO
   var username = req.body.username;
   var password = req.body.password;
 
-  con.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected!");
-    var sql = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')"
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      console.log(result.affectedRows + " row inserted into table");
-    });
-    con.end()
+  var passwordHash = crypto.createHash('sha1').update(password).digest('hex'); //https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+  console.log(passwordHash);
+
+  var sql = "INSERT INTO Users (Username, Password, Games_won, Games_lost, Games_played, Topic_cards_won) VALUES ('" + username + "', '" + passwordHash + "', 0, 0, 0, 0)";
+  con.query(sql, function (err, result) {
+    if (err) {
+      throw err;
+    }
+    console.log(result.affectedRows + " row inserted into table");
+    res.json({success: true})
   });
 
 })
@@ -616,14 +611,39 @@ that username.*/
 app.post('/userstats', (req, res) => { // queries sql database for games won. Edit it to your content.
   var username = req.body.username;
   var gamesWon
-  con.connect(function(err) {
-  if (err) throw err;
-  con.query("SELECT Games_won, Games_lost, Games_played FROM Users WHERE Username = \'" + username + "\'", function (err, result, fields) {
-    if (err) throw err;
-    console.log("Games Won: " + result[0].Games_won); //example output
+
+  con.query("SELECT Games_won, Games_lost, Games_played, Topic_cards_won FROM Users WHERE Username = \'" + username + "\'", function (err, result, fields) {
+    if (err) {
+      res.json({status: "failed"})
+    }
+    //console.log("Games Won: " + result[0].Games_won); //example output
+    //console.log(result[0]);
     gamesWon = result[0].Games_won
-    });
-    con.end()
+
+    var stats = [
+      {
+        statName: "Games Won",
+        value: result[0].Games_won
+      },
+      {
+        statName: "Games Lost",
+        value: result[0].Games_lost
+      },
+      {
+        statName: "Games Played",
+        value: result[0].Games_played
+      },
+      {
+        statName: "Topic Cards Won",
+        value: result[0].Topic_cards_won
+      }
+    ];
+
+    console.log(stats)
+
+    res.json({
+      stats: stats
+    })
   });
   //CONVERT STATS INTO AN ARRAY OF OBJECTS, WHERE EACH OBJECT IS OF THE FORM:
   /*
