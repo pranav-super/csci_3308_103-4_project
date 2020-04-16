@@ -27,42 +27,59 @@ export function Stats({ route,navigation }) {
 
   const { username } = route.params;
 
-  return (
-      <View style={styles.container}>
+  fetch('http://10.74.50.180:3000/userstats', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({"username": state.username, "password": state.username})
+  })
+    .then((response) => response.json())
+    .then((responseJson) => {
+        STATS = responseJson.stats;
+        return (
+            <View style={styles.container}>
 
-        <View style={{backgroundColor: "black", flex:0.15, flexDirection: "row"}}>
-          <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
-            <Text style={styles.titleText}>
-              STATS: {username}
-            </Text>
-          </View>
-        </View>
+              <View style={{backgroundColor: "black", flex:0.15, flexDirection: "row"}}>
+                <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
+                  <Text style={styles.titleText}>
+                    STATS: {username}
+                  </Text>
+                </View>
+              </View>
 
 
 
-        <View style={{flex: 1}}>
-          <ScrollView>
-              <DataTable>
-                <DataTable.Header>
-                  <DataTable.Title>Statistic</DataTable.Title>
-                  <DataTable.Title numeric>Value</DataTable.Title>
-                </DataTable.Header>
-                {
-                  STATS.map((item, index) => {
-                    return(
-                      <DataTable.Row>
-                        <DataTable.Cell>{item.statName}</DataTable.Cell>
-                        <DataTable.Cell numeric>{item.value}</DataTable.Cell>
-                      </DataTable.Row>
-                    )
-                  })
-                }
-              </DataTable>
-          </ScrollView>
-        </View>
+              <View style={{flex: 1}}>
+                <ScrollView>
+                    <DataTable>
+                      <DataTable.Header>
+                        <DataTable.Title>Statistic</DataTable.Title>
+                        <DataTable.Title numeric>Value</DataTable.Title>
+                      </DataTable.Header>
+                      {
+                        STATS.map((item, index) => {
+                          return(
+                            <DataTable.Row>
+                              <DataTable.Cell>{item.statName}</DataTable.Cell>
+                              <DataTable.Cell numeric>{item.value}</DataTable.Cell>
+                            </DataTable.Row>
+                          )
+                        })
+                      }
+                    </DataTable>
+                </ScrollView>
+              </View>
 
-      </View>
-  );
+            </View>
+        );
+    })
+    .catch((error) => {
+       console.log(error);
+    });
+
 }
 
 const styles = StyleSheet.create({
