@@ -1,39 +1,146 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert, ScrollView, FlatList, Dimensions, Image } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { Avatar, Button, Card, Title, Paragraph, DataTable } from 'react-native-paper';
 
-export function Scoreboard({ navigation }) {
+import { StackActions } from '@react-navigation/native'
 
-  var state = {
-    username: "",
-    password: ""
+export function ScoreboardWrapperWrapper({ route, navigation }) {
+  var { lobbykey } = route.params;
+
+  return(
+    <View style={styles.container}>
+      <ScoreboardWrapper navigation={navigation} lobbykey={lobbykey} />
+    </View>
+  )
+}
+
+
+class ScoreboardWrapper extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: "",
+      data: []
+    }
+    this.lobbykey = props.lobbykey;
+    this.navigation = props.navigation;
   }
 
+  render() {
+    return (
+        <View style={styles.container}>
 
-  return (
-      <View style={styles.container}>
-        <View style={styles.title}>
-          <Text style={styles.titleText}> CARDS </Text>
-          <Text style={styles.titleText}> AGAINST </Text>
-          <Text style={styles.titleText}> PROFANITY. </Text>
+            <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
+                <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.pop()}>
+                    <Text> Go back </Text>
+                </TouchableOpacity>
+
+                <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
+                    <Text style={{color: "white"}}>
+                        SCOREBOARD
+                    </Text>
+                </View>
+
+                <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => {
+                  fetch('http://10.74.50.180:3000/updatescoreboard', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({"lobbykey": this.lobbykey})
+                  })
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                      console.log("HERE")
+                      console.log(responseJson.scoreboard)
+                       this.setState({data: responseJson.scoreboard})
+                    })
+                    .catch((error) => {
+                       console.log(error);
+                    });
+                }}>
+                    <Image source={{uri: 'https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/reload-512.png'}}/>
+                </TouchableOpacity>
+            </View>
+
+
+
+            <View style={{flex: 1, flexDirection: "row"}}>
+                <Table scores={this.state.data} lobbykey={this.lobbykey} style={{flex:0.8}} />
+            </View>
         </View>
 
-        <View style={styles.loginContainer}>
-          <View style={styles.loginField}>
-            <TextInput onChangeText={(text) => state.username = text} placeholder={"Username"} style={styles.textField} />
-            <TextInput onChangeText={(text) => state.password = text} placeholder={"Password"} secureTextEntry={true} style={styles.textField}/>
-          </View>
-
-          <TouchableOpacity onPress={() => navigation.navigate("Landing", {username: state.username, password: state.password})} style={styles.button}>
-            <Text>Log in!</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")} style={styles.button}>
-            <Text>I don't have an account.</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-  );
+    )
+  }
 }
+
+
+class Table extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        entries: props.scores
+      }
+      this.lobbykey = props.lobbykey;
+    }
+
+    componentDidMount() {
+      fetch('http://10.74.50.180:3000/updatescoreboard', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"lobbykey": this.lobbykey})
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log("HERE")
+          console.log(responseJson.scoreboard)
+           this.setState({entries: responseJson.scoreboard})
+        })
+        .catch((error) => {
+           console.log(error);
+        });
+    }
+
+    componentWillReceiveProps(nextProps) { //https://stackoverflow.com/questions/41233458/react-child-component-not-updating-after-parent-state-change
+      this.setState({ entries: nextProps.scores });
+    }
+
+    render() {
+        return(
+          <View style={{flex: 1}}>
+            <ScrollView>
+              <DataTable>
+                <DataTable.Header>
+                  <DataTable.Title>Username</DataTable.Title>
+                  <DataTable.Title numeric>Score</DataTable.Title>
+                </DataTable.Header>
+
+                {
+                  this.state.entries.map((score, index) => {
+                    return(
+                      <DataTable.Row>
+                        <DataTable.Cell>{score.username}</DataTable.Cell>
+                        <DataTable.Cell numeric>{score.score}</DataTable.Cell>
+                      </DataTable.Row>
+                    )
+                  })
+                }
+              </DataTable>
+            </ScrollView>
+          </View>
+        )
+    }
+}
+
+
 
 const styles = StyleSheet.create({
 

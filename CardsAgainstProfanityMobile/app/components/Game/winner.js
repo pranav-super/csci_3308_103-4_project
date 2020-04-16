@@ -31,7 +31,6 @@ class Winner extends Component {
     super(props);
     //this.state = props.gameState;
     this.state = {
-      navigation: props.navigation,
       ended: false,
       prompt: {
 
@@ -40,6 +39,7 @@ class Winner extends Component {
 
       }
     }
+    this.navigation = props.navigation;
     this.username = props.username;
     this.lobbykey = props.lobbykey;
     this.getUpdate = this.getUpdate.bind(this);
@@ -100,14 +100,14 @@ class Winner extends Component {
         Alert.alert("Out of cards! The game is now over.");
         clearInterval(this.timer);
         //this.state.navigation.navigate("Landing", { username: this.username })
-        this.state.navigation.dispatch(
+        this.navigation.dispatch(
           StackActions.replace('Landing', {username: this.username})
         )
       }
       else {
         clearInterval(this.timer);
         //this.state.navigation.navigate("GameWrapper", {username: this.username, lobbykey: this.lobbykey})
-        this.state.navigation.dispatch(
+        this.navigation.dispatch(
           StackActions.replace('GameWrapper', {username: this.username, lobbykey: this.lobbykey})
         )
       }
@@ -121,7 +121,7 @@ class Winner extends Component {
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Chat", {"username": this.username, "lobbykey": this.lobbykey})}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
@@ -134,7 +134,7 @@ class Winner extends Component {
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Scoreboard", {"lobbykey": this.lobbykey})}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>

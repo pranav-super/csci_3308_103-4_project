@@ -50,8 +50,15 @@ export function Landing({route, navigation}) {
 
 const styles = StyleSheet.create({
 
+  invalid: {
+    fontFamily: "sans-serif-light",
+    backgroundColor: "red",
+    color: "white",
+    fontSize: 15
+  },
+
   container: {
-    backgroundColor: "#ddd2ce",
+    backgroundColor: "black",
     justifyContent: 'flex-start',
     flex: 1
   },
@@ -64,8 +71,8 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontFamily: "sans-serif-light",
-    backgroundColor: "#3f3f37",
-    color: "#dd977c",
+    backgroundColor: "white",
+    color: "black",
     fontSize: 35
   },
 
@@ -80,12 +87,13 @@ const styles = StyleSheet.create({
   },
 
   textField: {
-    margin: 10
+    margin: 10,
+    backgroundColor: "white"
   },
 
   button: {
     alignItems: 'center',
-    backgroundColor: "#dd977c",
+    backgroundColor: "grey",
     padding: 10,
     margin: 10,
     borderRadius: 3

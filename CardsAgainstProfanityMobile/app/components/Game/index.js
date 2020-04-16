@@ -232,8 +232,9 @@ class Game extends Component {
     super(props);
     //this.state = props.gameState;
     this.state = {
-      navigation: props.navigation
+
     }
+    this.navigation = props.navigation
     this.username = props.username;
     this.lobbykey = props.lobbykey;
   }
@@ -264,13 +265,13 @@ class Game extends Component {
          })*/
          clearInterval(this.timer);
          if (responseJson.role == 'judge') {
-           this.state.navigation.dispatch(
+           this.navigation.dispatch(
              StackActions.replace('JudgeWaitWrapper', {username: this.username, lobbykey: this.lobbykey})
            )
            //this.state.navigation.navigate("JudgeWaitWrapper", {username: this.username, lobbykey: this.lobbykey});
          }
          else {
-           this.state.navigation.dispatch(
+           this.navigation.dispatch(
              StackActions.replace('PlayerSelectWrapper', {username: this.username, lobbykey: this.lobbykey})
            )
            //this.state.navigation.navigate("PlayerSelectWrapper", {username: this.username, lobbykey: this.lobbykey});
@@ -292,7 +293,7 @@ class Game extends Component {
     <View style={styles.container}>
 
       <View style={{backgroundColor: "blue", flex:0.15, flexDirection: "row"}}>
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Chat")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Chat", {"username": this.username, "lobbykey": this.lobbykey})}>
           <Text> Chat </Text>
         </TouchableOpacity>
 
@@ -305,7 +306,7 @@ class Game extends Component {
           </Text>
         </View>
 
-        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => navigation.push("Scoreboard")}>
+        <TouchableOpacity style={{backgroundColor: "red", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => this.navigation.push("Scoreboard", {"lobbykey": this.lobbykey})}>
           <Text> Scoreboard </Text>
         </TouchableOpacity>
       </View>
