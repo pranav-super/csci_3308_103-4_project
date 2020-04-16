@@ -59,105 +59,9 @@ var con = mysql.createConnection({
 });
 
 
-
-
-
-/*var userpermissionsmapping = { //THIS WILL BE REPLACED BY AN SQL REQUEST, OR A REQUEST IN Landing/index.js WHERE THE USER PICKS THE DECKS TO USE FROM A FETCH REQUEST.
-  "Player1": ["Kids"]
-}*/
-
-
 var gameState = {
   defaultValue: 1
 }
-/*{
-  players: {
-    "Player1": {
-      cards: ["funny1", "funny2", "funny3"],
-      role: "judge",
-      status: "WAITING"
-    },
-
-    "Player2": {
-      cards: ["funny1", "funny2", "funny3"],
-      role: "player",
-      status: "PLAYING"
-    },
-
-    "Player3": {
-      cards: ["funny1", "funny2", "funny3"],
-      role: "player",
-      status: "PLAYING"
-    },
-
-    "Player4": {
-      cards: ["funny1", "funny2", "funny3"],
-      role: "player",
-      status: "PLAYING"
-    }
-  },
-
-  chat: [
-    {
-      author: "Player1",
-      message: "i want her"
-    },
-    {
-      author: "Player2",
-      message: "i want her"
-    },
-    {
-      author: "Player1",
-      message: "i want her"
-    },
-    {
-      author: "Player3",
-      message: "i want her"
-    },
-    {
-      author: "Player1",
-      message: "i want her"
-    }
-  ],
-
-  prompt: {
-    text: "Here's a funny question, what do you get when _____ goes _____?",
-    numSlots: 2,
-    responses: [
-      {
-        player: "Player 1",
-        value: "funny phrase"
-      },
-      {
-        player: "Player 2",
-        value: "funny phrase 2"
-      },
-      {
-        player: "Player 3",
-        value: "funny phrase 3"
-      }
-    ],
-    winner: null
-  },
-
-  deck: [
-    "Balls",
-    "In",
-    "My",
-    "Face"
-  ],
-
-  promptDeck: [
-    {
-      text: "Here's a funny question, what do you get when _____ goes _____?",
-      numSlots: 2
-    },
-    {
-      text: "The chicken crossed the road because ______.",
-      numSlots: 1
-    }
-  ]
-}*/
 
 
 
@@ -410,7 +314,16 @@ app.post('/winner', (req, res) => { //grab the winner, update state
           topicsWon = playerScore.score;
         }
       }
+      //connect to swql database
+      con.connect(function(err) {
+        if (err) throw err;
+        con.query("UPDATE Users SET Games_won = Games_won + 1 SET Games_played = Games_played + 1", function (err, result, fields) {
+          if (err) throw err;
+          console.log("User Stats updated. check sql server to verify stat update.");
 
+          });
+          con.end();
+      });
     }
 
     res.json({
@@ -648,10 +561,24 @@ app.post('/verifyuser', (req, res) => { //TO DO
   var passwordHash = crypto.createHash('sha1').update(password).digest('hex'); //https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 
   //DO SOME REQUEST HERE, CHECK IF THERE IS A USER IN DB WITH THAT HASH
-  //if yes:
-  res.json({success: true})
-  //else:
-  res.json({success:false})
+
+  con.connect(function(err) {
+    if (err) throw err;
+    con.query("SELECT Username, Password FROM Users WHERE Username = \'" + username + "\' AND Password = \'" + password + "\'", function (err, result, fields) {
+      if (err) throw err;
+      if (result = ' ') {   // if no result for matching username and pass
+          console.log("USERNAME AND/OR PASSWORD NOT FOUND. PLEASE TRY AGAIN\n");
+          res.json({success:false})
+      } else { // assumes something was returned
+          res.json({success: true})
+          console.log(result)
+      }
+      console.log("Results from Query: " + result);
+    });
+    con.end()
+  });
+  //con.end();    //terminate connection with db
+
 })
 
 
@@ -662,16 +589,35 @@ app.post('/newuser', (req, res) => { //TO DO
   var username = req.body.username;
   var password = req.body.password;
 
+  con.connect(function(err) {
+    if (err) throw err;
+    console.log("Connected!");
+    var sql = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')"
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log(result.affectedRows + " row inserted into table");
+    });
+    con.end()
+  });
+
 })
 
 
 
 /*this posts a username. This will respond with the user stats responding to    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 that username.*/
-app.post('/userstats', (req, res) => { //TO DO
+app.post('/userstats', (req, res) => { // queries sql database for games won. Edit it to your content.
   var username = req.body.username;
-
-
+  var gamesWon
+  con.connect(function(err) {
+  if (err) throw err;
+  con.query("SELECT Games_won, Games_lost, Games_played FROM Users WHERE Username = \'" + username + "\'", function (err, result, fields) {
+    if (err) throw err;
+    console.log("Games Won: " + result[0].Games_won); //example output
+    gamesWon = result[0].Games_won
+    });
+    con.end()
+  });
   //CONVERT STATS INTO AN ARRAY OF OBJECTS, WHERE EACH OBJECT IS OF THE FORM:
   /*
   {

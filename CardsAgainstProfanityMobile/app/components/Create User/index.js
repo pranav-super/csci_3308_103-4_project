@@ -75,7 +75,7 @@ export function CreateAccount({route, navigation}) {
               );
             }
           }} style={styles.button}>
-            <Text>join the madness!</Text>
+            <Text>Join the madness!</Text>
           </TouchableOpacity>
         </View>
       </View>
