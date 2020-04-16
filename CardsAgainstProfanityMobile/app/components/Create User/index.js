@@ -33,7 +33,7 @@ export function CreateAccount({route, navigation}) {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({"username": state.username, "password": state.username})
+                body: JSON.stringify({"username": state.username, "password": state.password})
               })
                 .then((response) => response.json())
                 .then((responseJson) => {

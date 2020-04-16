@@ -4,7 +4,7 @@ import { Avatar, Button, Card, Title, Paragraph, DataTable } from 'react-native-
 
 
 
-const STATS = [
+/*const STATS = [
   {
     statName: 'Games Played',
     value: 25,
@@ -21,64 +21,97 @@ const STATS = [
     statName: 'Pee Pee Poo Poo',
     value: 100,
   }
-];
+];*/
 
-export function Stats({ route,navigation }) {
+export function StatsWrapper({ route, navigation }) {
+  var { username } = route.params;
 
-  const { username } = route.params;
-
-  fetch('http://10.74.50.180:3000/userstats', {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({"username": state.username, "password": state.username})
-  })
-    .then((response) => response.json())
-    .then((responseJson) => {
-        STATS = responseJson.stats;
-        return (
-            <View style={styles.container}>
-
-              <View style={{backgroundColor: "black", flex:0.15, flexDirection: "row"}}>
-                <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
-                  <Text style={styles.titleText}>
-                    STATS: {username}
-                  </Text>
-                </View>
-              </View>
+  return(
+    <View style={styles.container}>
+      <Stats username={username}/>
+    </View>
+  );
+}
 
 
+class Stats extends Component {
 
-              <View style={{flex: 1}}>
-                <ScrollView>
-                    <DataTable>
-                      <DataTable.Header>
-                        <DataTable.Title>Statistic</DataTable.Title>
-                        <DataTable.Title numeric>Value</DataTable.Title>
-                      </DataTable.Header>
-                      {
-                        STATS.map((item, index) => {
-                          return(
-                            <DataTable.Row>
-                              <DataTable.Cell>{item.statName}</DataTable.Cell>
-                              <DataTable.Cell numeric>{item.value}</DataTable.Cell>
-                            </DataTable.Row>
-                          )
-                        })
-                      }
-                    </DataTable>
-                </ScrollView>
-              </View>
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    }
+    this.username = props.username;
+  }
 
-            </View>
-        );
+  componentDidMount() {
+    fetch('http://10.74.50.180:3000/userstats', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"username": this.username})
     })
-    .catch((error) => {
-       console.log(error);
-    });
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson)
+        if(responseJson.status != "failed") {
+          console.log(responseJson.stats)
+          this.setState({data: responseJson.stats})
+        }
+        else {
+          console.log("haha l");
+        }
+      })
+      .catch((error) => {
+         console.log(error);
+      });
+  }
+
+  render() {
+    return (
+        <View style={styles.container}>
+
+          <View style={{backgroundColor: "black", flex:0.15, flexDirection: "row"}}>
+            <View style={{flex: 1, flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
+              <Text style={styles.titleText}>
+                STATS: {this.username}
+              </Text>
+            </View>
+          </View>
+
+
+
+          <View style={{flex: 1}}>
+            <ScrollView>
+                <DataTable>
+                  <DataTable.Header>
+                    <DataTable.Title>Statistic</DataTable.Title>
+                    <DataTable.Title numeric>Value</DataTable.Title>
+                  </DataTable.Header>
+                  {
+                    this.state.data.map((item, index) => {
+                      return(
+                        <DataTable.Row>
+                          <DataTable.Cell>{item.statName}</DataTable.Cell>
+                          <DataTable.Cell numeric>{item.value}</DataTable.Cell>
+                        </DataTable.Row>
+                      )
+                    })
+                  }
+                </DataTable>
+            </ScrollView>
+          </View>
+
+        </View>
+    );
+  }
+
+
+
+
 
 }
 
