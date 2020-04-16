@@ -41,6 +41,25 @@ var promptDecks = {
 }
 
 
+//////////////////////////////////////////////////SQL CONNECTIONS//////////////////////////////////////////////////
+
+// This establishes a connection to my local mysql server as root
+// assumes that the given password has already been hashed
+
+var mysql = require('mysql');
+
+
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "password", //this is using my credentials for username and password.
+  database: "game_db"
+});
+
+
+
+
+
 /*var userpermissionsmapping = { //THIS WILL BE REPLACED BY AN SQL REQUEST, OR A REQUEST IN Landing/index.js WHERE THE USER PICKS THE DECKS TO USE FROM A FETCH REQUEST.
   "Player1": ["Kids"]
 }*/
