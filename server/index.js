@@ -2,6 +2,10 @@ const express = require('express')
 var bodyParser = require('body-parser')
 const app = express()
 const port = 3000
+var crypto = require('crypto')
+var mysql = require('mysql');
+
+
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
@@ -46,13 +50,11 @@ var promptDecks = {
 // This establishes a connection to my local mysql server as root
 // assumes that the given password has already been hashed
 
-var mysql = require('mysql');
-
 
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password", //this is using my credentials for username and password.
+  password: "4v3ry$3CUR3p4$$w0rd!", //this is using my credentials for username and password.
   database: "game_db"
 });
 
@@ -390,6 +392,34 @@ app.post('/winner', (req, res) => { //grab the winner, update state
     //end the game.
     //REMOVE THIS GAME BY LOBBYKEY.
     delete gameState[lobbykey];
+
+    var winnerName = "";
+    var winnerScore = -1;
+    for (var playerScore in gameState[lobbykey].scoreboard) {
+      if(playerScore.score > winnerScore) {
+        winnerName = playerScore.username;
+        winnerScore = playerScore.score;
+      }
+    }
+
+    //UPDATE DATABASE; FOR EACH USER, SEND QUERY///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    for(var playerName in Object(gameState[lobbykey].players).keys) {
+      //send query using the username, which will be playername, and update them based on their scores
+      //their total games played should be + 1
+      //wanna update games won or lost, a boolean stored in won/lost
+      var winOrLose = winnerName == playerName;
+
+      //wanna update topic cards won, stored in topics won
+      //their topic cards that they won, so their score:
+      var topicsWon = 0;
+      for (var playerScore in gameState[lobbykey].scoreboard) {
+        if (playerScore.username == playerName) {
+          topicsWon = playerScore.score;
+        }
+      }
+
+    }
+
     res.json({
       prompt: oldPrompt,
       winner: winner,
@@ -619,7 +649,16 @@ app.post('/verifylobby', (req, res) => {
 /*this posts a username and a password hash to authenticate. This will respond
 with verification that the user was authenticated or not.*/
 app.post('/verifyuser', (req, res) => { //TO DO
-  //TO DO
+  var username = req.body.username;
+  var password = req.body.password;
+
+  var passwordHash = crypto.createHash('sha1').update(password).digest('hex'); //https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+
+  //DO SOME REQUEST HERE, CHECK IF THERE IS A USER IN DB WITH THAT HASH
+  //if yes:
+  res.json({success: true})
+  //else:
+  res.json({success:false})
 })
 
 
@@ -627,14 +666,17 @@ app.post('/verifyuser', (req, res) => { //TO DO
 /*this posts a username and a password hash to create a new user. This will
 respond with verification that the user was created.*/
 app.post('/newuser', (req, res) => { //TO DO
-  //TO DO
+  var username = req.body.username;
+  var password = req.body.password;
+
 })
 
 
 
 /*this posts a username. This will respond with the user stats responding to that username.*/
 app.post('/userstats', (req, res) => { //TO DO
-  //TO DO
+  var username = req.body.username;
+  
 })
 
 app.listen(port, () => {
