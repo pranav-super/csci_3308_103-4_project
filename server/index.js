@@ -406,6 +406,9 @@ app.post('/createlobby', (req, res) => {
 
   let username = req.body.username;
 
+  //FOR DEMO:
+  newId = "DEMOID";
+
   gameState[newId] = {
 
     players: {
@@ -570,12 +573,12 @@ app.post('/verifyuser', (req, res) => { //TO DO
 
   con.query("SELECT Username, Password FROM Users WHERE Username = \'" + username + "\' AND Password = \'" + passwordHash + "\';", function (err, result, fields) {
     if (err) throw err;
-    if (result == ' ') {   // if no result for matching username and pass
+    if (result.toString() == '') {   // if no result for matching username and pass
       console.log("USERNAME AND/OR PASSWORD NOT FOUND. PLEASE TRY AGAIN\n");
       res.json({success:false})
     } else { // assumes something was returned
-      res.json({success: true})
       console.log(result)
+      res.json({success: true})
     }
   });
   //con.end();    //terminate connection with db

@@ -63,6 +63,9 @@ export function Login({ navigation }) {
                       if(responseJson.success == true) {
                         navigation.navigate("Landing", {username: username, password: password})
                       }
+                      else {
+                        setAttemptedsubmit(true)
+                      }
                     })
                     .catch((error) => {
                        console.log(error);

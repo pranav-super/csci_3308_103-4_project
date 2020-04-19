@@ -170,7 +170,8 @@ class PlayerSelect extends Component {
               .then((response) => response.json())
               .then((responseJson) => {
                  //this.state.navigation.navigate('PlayerWaitWrapper', { username: this.username, lobbykey: this.lobbykey })
-                 this.state.navigation.dispatch(
+                 console.log(responseJson);
+                 this.navigation.dispatch(
                    StackActions.replace('PlayerWaitWrapper', {username: this.username, lobbykey: this.lobbykey})
                  )
               })

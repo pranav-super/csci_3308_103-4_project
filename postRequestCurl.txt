@@ -25,3 +25,19 @@ curl -i -X POST -H "Content-Type:application/json" -d "{\"username\": \"JimmyNeu
 NOTES ABOUT GLITCHES:
 SOMETIMES REACT NAVIGATION SCREWS UP, AND WON'T HANDLE REPLACE CORRECTLY. THIS IS A KNOWN BUG IN REACT NAVIGATION, SO NOTHING CAN BE DONE AS OF YET.
 THIS ALSO CAUSES SOME DATA TO UNNECESSARILY PERSIST!
+
+
+FOR DEMO!!!
+
+Join Lobby:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"DEMOID\",  \"username\" : \"laptopUser\" }" http://10.74.50.180:3000/joinlobby
+
+Send Message:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"DEMOID\",  \"message\":{\"author\":\"laptopUser\", \"message\":\"hiiiiiiii lol\"}  }" http://10.74.50.180:3000/sendchat
+
+Submit Judge Response:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"DEMOID\",  \"winner\":[\"entry\"]  }" http://10.74.50.180:3000/judgeres
+
+Submit Player Response:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"DEMOID\",  \"username\" : \"laptopUser\", \"selected\":[\"dog\",\"doggie\"]  }" http://10.74.50.180:3000/playerres
+

@@ -155,10 +155,10 @@ class JudgeSelect extends Component {
             })
               .then((response) => response.json())
               .then((responseJson) => {
-                 this.navigation.navigate('WinnerWrapper', { username: this.username, lobbykey: this.lobbykey })
-                 /*this.state.navigation.dispatch(
+                 //this.navigation.navigate('WinnerWrapper', { username: this.username, lobbykey: this.lobbykey })
+                 this.state.navigation.dispatch(
                    StackActions.replace('WinnerWrapper', {username: this.username, lobbykey: this.lobbykey})
-                 )*/
+                 )
               })
               .catch((error) => {
                  console.log(error);
