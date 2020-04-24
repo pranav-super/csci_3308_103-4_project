@@ -67,6 +67,7 @@ class Winner extends Component {
         }
         else {
           this.setState({
+            ended: false,
             prompt: responseJson.prompt,
             winner: responseJson.winner
           })

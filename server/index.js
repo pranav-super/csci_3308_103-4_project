@@ -407,7 +407,7 @@ app.post('/createlobby', (req, res) => {
   let username = req.body.username;
 
   //FOR DEMO:
-  newId = "DEMOID";
+  //newId = "DEMOID";
 
   gameState[newId] = {
 
