@@ -1,0 +1,67 @@
+CURL COMMANDS!!!
+
+To add a player to a lobby:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"ENTER-LOBBYKEY-HERE\",  \"username\" : \"ENTER-FAUX-USERNAME-HERE\" }" http://10.74.50.180:3000/joinlobby
+
+To submit, as a player:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"ENTER-LOBBYKEY-HERE\",  \"username\" : \"ENTER-FAUX-USERNAME-HERE\", \"selected\":[\"ENTER-SUBMISSION-HERE\",\"USE-THE-ARRAY-TO-REPRESENT-MULTIPLE-CARDS\"]  }" http://10.74.50.180:3000/playerres
+
+To submit, as a judge:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"ENTER-LOBBYKEY-HERE\",  \"winner\":[\"ENTER-WINNING-ENTRY-HERE-AS-ARRAY\"]  }" http://10.74.50.180:3000/judgeres
+
+To create a lobby:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"username\": \"ENTER-FAUX-USERNAME-HERE\",  \"decks\":[\"Adult\", \"Kids\"]  }" http://10.74.50.180:3000/createlobby
+
+To start the lobby:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"ENTER-LOBBYKEY-HERE\"}" http://10.74.50.180:3000/startgame
+
+To post a message:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"ENTER-LOBBYKEY-HERE\",  \"message\":{\"author\":\"ENTER-FAUX-USERNAME-HERE\", \"message\":\"ENTER-MESSAGE-HERE\"}  }" http://10.74.50.180:3000/sendchat
+
+To verifyuser:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"username\": \"ENTER-REAL-USERNAME-HERE\",  \"password\":\"ENTER-REAL-PASSWORD-HERE\"  }" http://10.74.50.180:3000/verifyuser
+
+
+NOTES ABOUT GLITCHES:
+SOMETIMES REACT NAVIGATION SCREWS UP, AND WON'T HANDLE REPLACE CORRECTLY. THIS IS A KNOWN BUG IN REACT NAVIGATION, SO NOTHING CAN BE DONE AS OF YET.
+THIS ALSO CAUSES SOME DATA TO UNNECESSARILY PERSIST!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FOR DEMO!!!
+
+Join Lobby:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"DEMOID\",  \"username\" : \"laptopUser\" }" http://10.74.50.180:3000/joinlobby
+
+Send Message:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"DEMOID\",  \"message\":{\"author\":\"laptopUser\", \"message\":\"hiiiiiiii lol\"}  }" http://10.74.50.180:3000/sendchat
+
+Submit Judge Response:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"DEMOID\",  \"winner\":[\"entry\"]  }" http://10.74.50.180:3000/judgeres
+
+Submit Player Response:
+curl -i -X POST -H "Content-Type:application/json" -d "{\"lobbykey\": \"DEMOID\",  \"username\" : \"laptopUser\", \"selected\":[\"dog\",\"doggie\"]  }" http://10.74.50.180:3000/playerres
+
