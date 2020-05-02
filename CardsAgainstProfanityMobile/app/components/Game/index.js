@@ -11,26 +11,7 @@ import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
 
 
-/*const CARDS = [
-  {
-    selected: false,
-    value: "funny phrase"
-  },
-  {
-    selected: false,
-    value: "funny phrase 2"
-  },
-  {
-    selected: false,
-    value: "funny phrase 3"
-  }
-];
-
-var selectedCards = [];
-
-
-*/
-export class Item extends Component { /*the reason I haven't been using this syntax for everything is because react navigation won't work with it at the moment */
+export class Item extends Component { /*the reason I haven't been using this syntax for everything is because react navigation won't work with it at the moment; we had to use wrappers */
 
   constructor(props) {
     super(props);
@@ -141,77 +122,7 @@ export class Timer extends Component {
 }
 
 
-export function GameWrapper({ route, navigation }) {
-  /*var gameState =
-    {
-      players: [
-        {
-          name: "Player1",
-          cards: ["funny1", "funny2", "funny3"]
-        },
-
-        {
-          name: "Player2",
-          cards: ["funny1", "funny2", "funny3"]
-        },
-
-        {
-          name: "Player3",
-          cards: ["funny1", "funny2", "funny3"]
-        },
-
-        {
-          name: "Player4",
-          cards: ["funny1", "funny2", "funny3"]
-        }
-      ],
-
-      chat: [
-        {
-          author: "Player1",
-          message: "i want her"
-        },
-        {
-          author: "Player2",
-          message: "i want her"
-        },
-        {
-          author: "Player1",
-          message: "i want her"
-        },
-        {
-          author: "Player3",
-          message: "i want her"
-        },
-        {
-          author: "Player1",
-          message: "i want her"
-        }
-      ],
-      prompt: {
-        text: "Here's a funny question, what do you get when _____ goes _____?",
-        numSlots: 2,
-        responses: [
-          {
-            player: "Player 1",
-            value: "funny phrase"
-          },
-          {
-            player: "Player 2",
-            value: "funny phrase 2"
-          },
-          {
-            player: "Player 3",
-            value: "funny phrase 3"
-          }
-        ]
-      },
-      myState: {
-        role: "beginning",
-        status: "null"
-      }
-    }*/
-
+export function GameWrapper({ route, navigation }) { //defining a wrapper for the game component
   var { username } = route.params;
   var { lobbykey } = route.params;
 
@@ -226,11 +137,10 @@ export function GameWrapper({ route, navigation }) {
   );
 }
 
-class Game extends Component {
+class Game extends Component { //this is the game component, which is a waiting screen for players prior to them learning their role for this round (as a judge or as a player)
 
   constructor(props) {
     super(props);
-    //this.state = props.gameState;
     this.state = {
 
     }
