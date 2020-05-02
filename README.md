@@ -1,31 +1,26 @@
-csci_3308_103-4_project
-
-
-
-
-#Cards Against Profanity
+# Cards Against Profanity
 
 A project for CSCI 3308 by team TeamName (103-4), consisting of Austin Lucas (A-Luc), Christopher Mccarroll-Gilbert (chrismcg14), Hayes Vavpetic (hayes-vavpetic), Pranav Subramanian (pranav-super), and Justin Murillo (jumu3668).
 
-##About Our Project:
+## About Our Project:
 
 Cards Against Profanity is a novel take on the classic “Cards Against Humanity”/“Apples to Apples” type game. All 3 of these games operate under the same premise. Every player is dealt a few cards, which we can call “response cards”. Every single round, a new card, which we refer to as a “topic card” is provided. The topic card might look something like, “I like to _____.” It’s now the players’ duty to select one of their response cards, which could be really any word, and use those cards to respond to the topic card. If my best response card is just the word “cry”, I’d play that and hope nobody else put something better. Every round, a judge is picked (on a rotation), and the judge is the only player that, instead of submitting a card this round, judges the submissions and picks the best response. The judge picks a winning card, and the player who played that card wins the topic card, or an associated number of points!
 The novel feature that we provide is the fact that we have migrated this card game to be a playable mobile application, and unlike “Cards Against Humanity”, which is geared towards adults, and “Apples to Apples”, which is geared towards kids, our game lets players choose if they want to play with kid-friendly or adult-friendly cards. 
 
 Also, by virtue of being an application, we offer user authentication services that allow players to have their own accounts, so that they can keep track of their own statistics, including information about how many games they've won! We also offer an in-game chat functionality, a live scoreboard, as well as a lobby creation system based on lobby keys, so that you can play * *locally* * with your friends by letting them know what the lobbykey is!
 
-##Technologies Utilized:
+## Technologies Utilized:
 
 - Node
 - React Native
 - Express.js
 - MySQL
 
-#REPOSITORY ORGANIZATION/STRUCTURE
+# REPOSITORY ORGANIZATION/STRUCTURE
 
 There are three folders that comprise this repository. Each of the following subsections details some important information about each of them. 
 
-##CardsAgainstProfanityMobile
+## CardsAgainstProfanityMobile
 This folder contains everything pertaining to the frontend, which was developed in React Native. 
 
 It has a main `App.js` file, which is the file that links all the components and views in the application together, while also initializing the navigator (based on the `react-navigation` library) that enables transitions between these views. This is sort of like a driver!
@@ -34,7 +29,7 @@ This folder also contains a `package.json` file, which contains all the importan
 
 The final thing to note is the `app/components` folder. In here is where the heart of the application lies, as this contains all the subdirectories and `.js` files that define every component and view that makes up our application, from user login capabilities, to gameplay capabilities!
 
-##server
+## server
 This folder contains everything pertaining to both the middleware and the backend. 
 
 Like the `CardsAgainstProfanityMobile` folder, this also has a `node_modules` folder; both of these folders and their related applications/software depend on packages that come from the Node Package Manager (npm). React Native, for example, can be installed and managed via npm.
@@ -43,22 +38,22 @@ The main file here is the `server.js` file. This file outlines the `Express.js` 
 
 Finally, there is the `test.sql` file. This file outlines all the SQL code which our database uses (we use a database primarily for user-authentication).
 
-##Additional Project Information
+## Additional Project Information
 This folder contains additional project information, namely a short demonstational video outlining the application's capabilities, a list of test cases, as well as a list of cURL requests.  A client using a shell could utilize these to mimic another player - it has a list of POST requests that, when sent at the server described earlier in `server.js`, could manipulate an existing game's state the same way a player playing the game would (also, you can use some of these requests to create instances of games too!).
 
 
 
 
 
-#DEPLOYMENT
+# DEPLOYMENT
 
 We chose to deploy our app locally. Should you want to play the game, you would want to work through the following steps involved in setting everything up.
 
-##Requirements
+## Requirements
 
 - You are going to want an Android phone to run this. We elaborate on why in the following section, when we discuss preparing the mobile device.
 
-##Setup
+## Setup
 
 - First, install the most recent version of `MySQL Workbench` and `MySQL Server`; for us, this was version **8.0**. 
  - Take note of your root password!
@@ -97,7 +92,7 @@ We chose to deploy our app locally. Should you want to play the game, you would 
 - Do the same for the `postRequestCurl` file in the `Additional Project Information` directory.
 
 
-##Deployment/Running the Application
+## Deployment/Running the Application
 - Open three shell windows, all in the base folder where you cloned your repository.
 - In the first shell window, go to the `server` directory, and run the command `node server.js`. You should see that it is listening on port 3000.
 - In the second shell window, go to the `CardsAgainstProfanityMobile` directory, and run `npx react-native run-android` (or `npx react-native run-ios` if you're curious to see what dependencies might break or not break). Ensure that your phone is plugged in, and that running `adb devices` confirms that your phone is connected, prior to doing this!
