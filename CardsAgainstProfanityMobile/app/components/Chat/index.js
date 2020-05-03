@@ -46,7 +46,7 @@ class ChatWrapper extends Component {
                 </View>
 
                 <TouchableOpacity style={{backgroundColor: "black", flex: .30, justifyContent: "center", alignItems: "center"}} onPress={() => {
-                  fetch('http://128.138.54.141:10243/updatechat', {
+                  fetch('http://128.138.54.141:3000/updatechat', {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -91,7 +91,7 @@ class ChatWrapper extends Component {
                     this.setState({message: ""})
 
                     //send message on server
-                    fetch('http://128.138.54.141:10243/sendchat', {
+                    fetch('http://128.138.54.141:3000/sendchat', {
                       method: 'POST',
                       mode: 'cors',
                       headers: {
