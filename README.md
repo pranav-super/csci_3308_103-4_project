@@ -17,7 +17,7 @@ Also, by virtue of being an application, we offer user authentication services t
 - MySQL
 - Heroku
 
-# Repository Organization/Structure
+# REPOSITORY ORGANIZATION/STRUCTURE
 
 There are three folders that comprise this repository. Each of the following subsections details some important information about each of them.
 
@@ -40,13 +40,13 @@ The main file here is the `server.js` file. This file outlines the `Express.js` 
 Finally, there is the `test.sql` file. This file outlines all the SQL code which our database uses (we use a database primarily for user-authentication).
 
 ## Additional Project Information
-This folder contains additional project information, namely a short demonstational video outlining the application's capabilities, a list of test cases, our seventh milestone, as well as a list of cURL requests.  A client using a shell could utilize these to mimic another player - it has a list of POST requests that, when sent at the server described earlier in `server.js`, could manipulate an existing game's state the same way a player playing the game would (also, you can use some of these requests to create instances of games too!).
+This folder contains additional project information, namely a short demonstational video outlining the application's capabilities, a list of test cases, as well as a list of cURL requests.  A client using a shell could utilize these to mimic another player - it has a list of POST requests that, when sent at the server described earlier in `server.js`, could manipulate an existing game's state the same way a player playing the game would (also, you can use some of these requests to create instances of games too!).
 
 
 
 
 
-# Deployment
+# DEPLOYMENT
 
 <s>We chose to deploy our app locally. Should you want to play the game, you would want to work through the following steps involved in setting everything up.</s>
 We chose to deploy the user profile system through Heroku database hosting. The rest is done locally. Should you want to play the game, you would want to work through the following steps involved in setting everything up.
@@ -94,7 +94,6 @@ First, we are going to install nodejs and react native in order for the app to r
   - `Scoreboard/index.js`
   - `Stats/index.js`
 - Do the same for the `postRequestCurl` file in the `Additional Project Information` directory.
-- Also, update `server.js` in the `server` directory with database information matching * *your* * MySQL instance (this involves changing line 55).
 
 
 ## Deployment/Running the Application
