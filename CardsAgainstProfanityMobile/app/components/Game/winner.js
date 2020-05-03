@@ -47,7 +47,7 @@ class Winner extends Component {
 
   componentDidMount() {
     this.timer = setInterval(() => this.getUpdate(), 7000);
-    fetch('http://10.74.50.180:3000/winner', {
+    fetch('http://128.138.54.141:3000/winner', {
       method: 'POST',
       mode: 'cors',
       headers: {

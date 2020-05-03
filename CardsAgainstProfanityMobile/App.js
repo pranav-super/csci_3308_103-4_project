@@ -41,6 +41,14 @@ import { ScoreboardWrapperWrapper } from './app/components/Scoreboard/index.js';
     </View>
   );
 }*/
+/////////////////////////////////////////////////////////////////////////////////////////
+// This is the global IP variable Used to configure the ip address for the host        //
+// Type ipconfig in your command prompt and replace this value with your IPv4 address  //
+// For mac users, open terminal and type ipconfig | grep "inet " | grep -v 127.0.0.1   //
+// Alternatively, you can just google "my IP address" and copy that value              //
+/////////////////////////////////////////////////////////////////////////////////////////
+global.ip = 128.138.54.141;
+
 
 const Stack = createStackNavigator();
 

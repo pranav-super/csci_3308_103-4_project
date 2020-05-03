@@ -26,7 +26,7 @@ export function CreateAccount({route, navigation}) {
 
           <TouchableOpacity onPress={() => {
             if (state.password == state.confirm && state.username != "" && state.password != "") {
-              fetch('http://10.74.50.180:3000/newuser', {
+              fetch('http://128.138.54.141:3000/newuser', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {

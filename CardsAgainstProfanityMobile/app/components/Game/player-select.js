@@ -59,7 +59,7 @@ class PlayerSelect extends Component {
 
   timerHandler() {//executed when timer finishes
     //submit, POST request, pass username, lobbykey, prompt
-    fetch('http://10.74.50.180:3000/playerres', {
+    fetch('http://128.138.54.141:3000/playerres', {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -82,7 +82,7 @@ class PlayerSelect extends Component {
 
   componentDidMount() {
     //fetch cards
-    fetch('http://10.74.50.180:3000/playerselectstate', {
+    fetch('http://128.138.54.141:3000/playerselectstate', {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -158,7 +158,7 @@ class PlayerSelect extends Component {
           //verify number of cards selected is right
           if (this.state.selected.length == this.state.prompt.numSlots) {
             //HTTP request
-            fetch('http://10.74.50.180:3000/playerres', {
+            fetch('http://128.138.54.141:3000/playerres', {
               method: 'POST',
               mode: 'cors',
               headers: {
