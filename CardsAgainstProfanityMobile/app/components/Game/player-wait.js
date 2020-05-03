@@ -45,7 +45,7 @@ class PlayerWait extends Component {
 
   getUpdate() {
     //fetch
-    fetch('http://128.138.54.141:3000/readytoshowwinner', {
+    fetch('http://10.74.50.180:3000/readytoshowwinner', {
       method: 'POST',
       mode: 'cors',
       headers: {

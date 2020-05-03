@@ -45,7 +45,7 @@ class JudgeWait extends Component {
 
   getUpdate() {
     //fetch
-    fetch('http://128.138.54.141:3000/readytojudge', {
+    fetch('http://10.74.50.180:3000/readytojudge', {
       method: 'POST',
       mode: 'cors',
       headers: {

@@ -64,7 +64,7 @@ class JudgeSelect extends Component {
 
   componentDidMount() {
     //fetch cards
-    fetch('http://128.138.54.141:3000/judgeselectstate', {
+    fetch('http://10.74.50.180:3000/judgeselectstate', {
       method: 'POST',
       mode: 'cors',
       headers: {

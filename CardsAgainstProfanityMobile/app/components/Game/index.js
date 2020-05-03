@@ -155,7 +155,7 @@ class Game extends Component { //this is the game component, which is a waiting 
 
   getUpdate() {
     //fetch
-    fetch('http://128.138.54.141:3000/role', {
+    fetch('http://10.74.50.180:3000/role', {
       method: 'POST',
       mode: 'cors',
       headers: {

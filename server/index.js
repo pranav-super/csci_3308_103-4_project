@@ -52,14 +52,10 @@ var promptDecks = {
 
 
 var con = mysql.createConnection({
-  // host: "localhost",
-  // user: "root",
-  // password: "password", //this is using my credentials for username and password.
-  // database: "game_db"
-  host: "us-cdbr-east-06.cleardb.net",
-  user: "b1bf85a071d82a",
-  password: "83e471df",
-  database: "heroku_6b89eb2de7423ce"
+  host: "localhost",
+  user: "root",
+  password: "password", //this is using my credentials for username and password.
+  database: "game_db"
 });
 
 con.connect(function(err) {
